@@ -1,0 +1,7 @@
+Different Coloured Cars randomly generate at the edges of the map headed inwards
+The colour of the car indicates what building it needs to go to
+Player builds pathways to create a smooth flow of traffic so that cars can get to their destinations
+Once the flow of traffic reaches a high enough rate, more spawn locations and destination locations are added.
+Add stoplights / stopsigns to help reduce crashes
+Add roundabouts with yielding 
+Car 'AI' weighs the pros and cons of each way to take
