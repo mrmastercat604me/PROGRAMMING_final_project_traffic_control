@@ -65,10 +65,52 @@ class DestinationPair:
 		self.destination = Location(destination_x,destination_y,destination_name,self.pairing_id)
 		self.cars = []
 	
+	def move_car(self,index_of_car:int,destination):
+		if len(self.cars) > index_of_car:
+			if isinstance(destination,tuple):
+				x,y = destination
+			elif isinstance(destination,'Location'):
+				x,y = destination.x, destination.y
+			car = self.cars[index_of_car]
+			car.move_to((x,y))
 	def make_car(self):
 		self.cars.append(Car(self.spawner,self.destination,name="blue_car"))
 
+
+class spritesheet(object):
+    def __init__(self, filename):
+        try:
+            self.sheet = pygame.image.load(filename).convert()
+        except pygame.error as message:
+            print('Unable to load spritesheet image: ', filename)
+
+    # Load a specific image from a specific rectangle
+    def image_at(self, rectangle, colorkey = None):
+        # Loads image from x,y,x+offset,y+offset
+        rect = pygame.Rect(rectangle)
+        image = pygame.Surface(rect.size).convert()
+        image.blit(self.sheet, (0, 0), rect)
+        if colorkey is not None:
+            if colorkey == -1:
+                colorkey = image.get_at((0,0))
+            image.set_colorkey(colorkey, pygame.RLEACCEL)
+        return image
+	
+    # Load a whole bunch of images and return them as a list
+    def images_at(self, rects, colorkey = None):
+        # Loads multiple images, supply a list of coordinates 
+        return [self.image_at(rect, colorkey) for rect in rects]
+	
+    # Load a whole strip of images
+    def load_strip(self, rect, image_count, colorkey = None):
+        # Loads a strip of images and returns them as a list 
+        tups = [(rect[0]+rect[2]*x, rect[1], rect[2], rect[3])
+                for x in range(image_count)]
+        return self.images_at(tups, colorkey)
+
+
 if __name__ == "__main__":
+	print("\n"*3)
 	# start = (0,0)
 	# end = (3,5)
 	# c1 = Car(start,end)
@@ -86,17 +128,13 @@ if __name__ == "__main__":
 	print(blue_pair.spawner)
 	print(blue_pair.destination)
 	print(blue_pair.pairing_id)
-	blue_car = Car(start=blue_pair.spawner,destination=blue_pair.destination)
-	print(blue_car)
-	print(blue_car.arrived())
-	blue_car.move_to(blue_pair.destination)
-	print(blue_car)
-	print(blue_car.arrived())
-	
+	print()
 	print("-"*30)
 	print()
 
 	print(blue_pair.cars)
 	blue_pair.make_car()
+	print(blue_pair.cars)
+	blue_pair.move_car(0,(1,0))
 	print(blue_pair.cars)
 			

@@ -1,4 +1,7 @@
 import pygame
+import random
+import string
+import begin_work.classes as classes
 
 
 #WINDOW / GRID VARIABLES
@@ -359,16 +362,16 @@ if __name__ == "__main__":
 						if path:
 							for node in path:
 								node.highlighted = True
-							
 						else:
 							print("No Path Was Found!!")
 						
 
 			
 		draw_grid(screen,grid)
+
 		clock.tick(60)
 	pygame.quit()
 
-# * NOW WORK ON TILE OBSTACLE_TOGGLE TO WORK WITH A DRAGGING MOUSE
+# * NOW WORK ON TILE OBSTACLE_TOGGLE TO WORK WITH A DRAGGING MOUSE (CHECK?)
 # * THEN, MAKE A START TILE AND GOAL TILE SHARE SOME ATTRIBUTE SO THEY ARE CONNECTED,
 # THAT WAY WE CAN HAVE MULTIPLE STARTS AND GOAL THAT ARE TIED TO THE PROPER CONNECTION
