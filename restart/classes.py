@@ -23,6 +23,8 @@ class Button():
 		self.text_color = color
 	
 	def draw(self):
-		pygame.draw.rect(self.surface,self.color,self.rect)
+		temp_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+		temp_surface.fill(self.color)
+		self.surface.blit(temp_surface, self.rect)
 		if self.text != None:
 			draw_text(self.text ,self.font,self.text_color, self.surface, 0,0, self.rect)
