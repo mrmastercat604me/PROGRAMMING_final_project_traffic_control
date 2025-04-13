@@ -10,28 +10,38 @@ SCREEN_HEIGHT = 800
 #PYGAME SPECIFIC VARIABLES
 font = pygame.font.SysFont(None,75)
 mainClock = pygame.time.Clock()
+FPS = 60
 
 #create the main screen
 pygame.display.set_caption("Game Name")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),0,32)
 surface = pygame.Surface((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.SRCALPHA)
-BackgroundImage = pygame.image.load("assets/background.png")
-BackgroundImageRect = BackgroundImage.get_rect()
-BackgroundImageRect.topleft = (0,0)
+BackgroundImage = pygame.image.load("assets/background.png").convert()
 BackgroundImage = pygame.transform.scale(BackgroundImage,(SCREEN_WIDTH,SCREEN_HEIGHT))
+BackgroundImage_width = BackgroundImage.get_width()
+
+#SCROLLING WINDOW VARIABLES
+scroll = 0
+tiles = (SCREEN_WIDTH // BackgroundImage_width) + 1
 
 #TOGGLE VARIABLES
 LeftClick = False
 RightClick = False
 
 def main_menu():
+	global scroll
 	LeftClick = False
 	RightClick = False
 	while True:
 		#----DRAW-SCREEN-BACKGROUND-------#
 		screen.fill((0,0,0))
 		screen.blit(surface, (0,0))
-		surface.blit(BackgroundImage,BackgroundImageRect)
+		for i in range(0, tiles):
+			surface.blit(BackgroundImage,((i*BackgroundImage_width)+scroll,0))
+		scroll -= 1
+		#reset scroll
+		if abs(scroll) > BackgroundImage_width:
+			scroll = 0
 		#----------------------------------------#
 		#----------DRAW-TITLE-AND-BUTTONS------#
 		mouse_x,mouse_y = pygame.mouse.get_pos()
@@ -79,7 +89,7 @@ def main_menu():
 					RightClick = False
 		#-----------------------------------------#
 		pygame.display.update()
-		mainClock.tick(60)
+		mainClock.tick(FPS)
 
 if __name__ == "__main__":
 	main_menu()
