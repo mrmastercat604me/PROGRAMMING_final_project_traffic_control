@@ -1,17 +1,10 @@
 import pygame, sys
 from functions import *
 from classes import *
+from variables import *
 
 pygame.init()
 
-#GLOBAL VARIABLES
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
-
-#PYGAME SPECIFIC VARIABLES
-font = pygame.font.SysFont(None,75)
-mainClock = pygame.time.Clock()
-FPS = 60
 
 #create the main screen
 pygame.display.set_caption("Game Name")
@@ -21,10 +14,8 @@ surface = pygame.Surface((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.SRCALPHA).convert_
 #create background
 BackgroundImage = pygame.image.load("assets/background.png").convert()
 BackgroundImage = pygame.transform.scale(BackgroundImage,(SCREEN_WIDTH,SCREEN_HEIGHT))
-BackgroundImage_width = BackgroundImage.get_width()
 #scrolling background variables
 scroll = 0
-tiles = (SCREEN_WIDTH // BackgroundImage_width) + 1
 
 #create the buttons
 title_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,255,255,0))
@@ -48,12 +39,7 @@ def main_menu():
 	RightClick = False
 	while True:
 		#----UPDATE-SCREEN-BACKGROUND-SCROLL-------#
-		for i in range(0, tiles):
-			surface.blit(BackgroundImage,((i*BackgroundImage_width)+scroll,0))
-		scroll -= 1
-		#reset scroll
-		if abs(scroll) > BackgroundImage_width:
-			scroll = 0
+		scroll = horz_scroll_image(BackgroundImage,surface,scroll=scroll)
 		#----------------------------------------#
 		#----------DRAW-TITLE-AND-BUTTONS------#
 		title_button.draw()

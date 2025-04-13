@@ -1,4 +1,6 @@
 import pygame
+from variables import *
+
 def draw_text(text:str,font:'pygame.font',color:str,surface:'pygame.Surface',x:int,y:int,centerSurface=None,width:int=None,height:int=None):
 		textobj = font.render(text, 1, color)
 		original_font_size = font.get_height()
@@ -27,3 +29,25 @@ def draw_text(text:str,font:'pygame.font',color:str,surface:'pygame.Surface',x:i
 
 def percent_of(percent:float,total:float) -> float:
 		return (percent * total) / 100
+
+def horz_scroll_image(image,surface,y_pos=0,scroll=0)->int:
+	'''
+	Handles the logic to scroll an image across the screen from right to left.
+
+	image = pygame.image.load(), surface = pygame.Surface,
+	
+	y_pos = y | Default is 0 | , scroll = int | Default is 0 | 
+
+	Funtion returns scroll value to be plugged back into this function.
+	Need a starting scroll value of 0 to be created before any main loop.
+	'''
+	scroll = scroll
+	y = y_pos
+	image_width = image.get_width()
+	tiles = (SCREEN_WIDTH // image_width) + 1
+	for i in range(0,int(tiles)):
+		surface.blit(image,((scroll+(i*image_width)), y))
+	scroll -= 1
+	if abs(scroll) > image_width:
+		scroll = 0
+	return scroll
