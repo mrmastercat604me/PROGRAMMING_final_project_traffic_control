@@ -6,9 +6,9 @@ pygame.init()
 #GLOBAL VARIABLES
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
-font = pygame.font.SysFont(None,70)
 
-
+#PYGAME SPECIFIC VARIABLES
+font = pygame.font.SysFont(None,75)
 mainClock = pygame.time.Clock()
 
 #create the main screen
@@ -20,8 +20,7 @@ BackgroundImageRect = BackgroundImage.get_rect()
 BackgroundImageRect.topleft = (0,0)
 BackgroundImage = pygame.transform.scale(BackgroundImage,(SCREEN_WIDTH,SCREEN_HEIGHT))
 
-
-
+#TOGGLE VARIABLES
 LeftClick = False
 RightClick = False
 
