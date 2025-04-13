@@ -70,6 +70,7 @@ def main_menu():
 		if start_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
 				print("Play Game")
+				#call function from other files and run #just like in blastroids project
 			if RightClick:
 				print("Play Right Click")
 		if options_button.collidepoint((mouse_x,mouse_y)):
