@@ -9,3 +9,11 @@ pygame.init()
 font = pygame.font.SysFont(None,75)
 mainClock = pygame.time.Clock()
 FPS = 60
+
+#DIFFICULTIES
+difficulties_dict = {
+    "Easy" : {},
+    "Normal" : {},
+    "Hard" : {}
+}
+difficulties_list = list(difficulties_dict.keys())
