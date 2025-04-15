@@ -1,7 +1,7 @@
 import pygame
 import random
 import string
-import begin_work.classes as classes
+import classes as classes
 
 
 #WINDOW / GRID VARIABLES
@@ -51,7 +51,7 @@ class Tile:
 		self.f = 0
 		self.f = (f) if (g+h==f) else (g+h)
 	
-	def get_tile_values(self) -> tuple:
+	def get_tile_values(self):
 		if self.g == float('inf'):
 			g = None
 		else:
@@ -94,7 +94,7 @@ class Grid:
 			if 0 <= y < self.height:
 				self.grid[y][x].is_walkable = not self.grid[y][x].is_walkable
 	
-	def get_tile_within_area(self, x:int, y:int) -> bool:
+	def get_tile_within_area(self, x:int, y:int) -> 'Tile':
 		if 0 <= x < self.width and 0 <= y < self.height:
 			return self.grid[y][x]
 		else:
