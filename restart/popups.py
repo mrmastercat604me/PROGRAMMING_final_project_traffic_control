@@ -8,13 +8,18 @@ pygame.init()
 def confirm_game_exit_popup(screen,surface):
 	#-----------CREATE-A-TRANSPARENT-SURFACE----------#
 	transparent_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-	transparent_surface.fill((96,96,96,153))
+	transparent_surface.fill((96,96,96,150))
+	#----------PROPERLY-DRAW-THE-TRANSPARENT-OVERLAY---------#
+	popup_layer = surface.copy()
+	#add the transparent overlay
+	popup_layer.blit(transparent_surface,(0,0))
+	#------------------------------------------#
 	#------------------------------------------------#
 	#----------------CREATE-THE-BUTTONS--------------#
-	confirm_text = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(230,230,230))
-	confirm_text2 = Button(percent_of(25,SCREEN_WIDTH),percent_of(20,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(230,230,230))
-	continue_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200,245))
-	leave_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,10,10,245))
+	confirm_text = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(230,230,230))
+	confirm_text2 = Button(percent_of(25,SCREEN_WIDTH),percent_of(20,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(230,230,230))
+	continue_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(200,200,200,245))
+	leave_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(255,10,10,245))
 	#centre the buttons
 	confirm_text.centerx(percent_of(50,SCREEN_WIDTH))
 	confirm_text2.centerx(percent_of(50,SCREEN_WIDTH))
@@ -32,9 +37,6 @@ def confirm_game_exit_popup(screen,surface):
 
 	running = True
 	while running:
-		#--------UPDATE-BACKGROUND-----------------#
-		surface.blit(transparent_surface,(0,0))
-		#------------------------------------------#
 		#----------DRAW-THE-BUTTONS----------------#
 		confirm_text.draw()
 		confirm_text2.draw()
@@ -67,7 +69,7 @@ def confirm_game_exit_popup(screen,surface):
 					RightClick = False
 		#--------------------------------------------------#
 		#----------DRAW-EVERYTHING-TO-THE-SCREEN-------------#
-		screen.blit(surface,(0,0))
+		screen.blit(popup_layer,(0,0))
 		pygame.display.flip()
 		mainClock.tick(FPS)
 		#----------------------#

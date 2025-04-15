@@ -37,6 +37,7 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		#---------------------------------------#
 		#----------DRAW-EVERYTHING--------------#
 		grid_surface = draw_grid(grid_surface,grid,settings)
+		surface.blit(grid_surface,(GRID_X,GRID_Y))
 		#---------------------------------------#
 		#-------------INPUT-LOGIC----------------#
 		LeftClick = False
@@ -65,7 +66,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		#--------------------------------------------------#
 		#----------DRAW-THE-SURFACE-TO-THE-SCREEN-----------#
 		screen.fill((0,0,0))
-		surface.blit(grid_surface,(GRID_X,GRID_Y))
 		screen.blit(surface, (0,0))
 		pygame.display.flip()
 		mainClock.tick(FPS)
