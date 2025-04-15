@@ -34,9 +34,9 @@ class Tile:
 		self.x = x
 		self.y = y
 		self.type = type
-		self.g = float('int')
+		self.g = float('inf')
 		self.h = float('inf')
-		self.f = float('int')
+		self.f = float('inf')
 		self.parent_node = None
 	
 	def __lt__(self,node:'Tile') -> bool:
@@ -81,7 +81,7 @@ class Grid:
 		for y in range(height):
 			row = []
 			for x in range(width):
-				col = Tile(x+self.x, y+self.y)
+				col = Tile(x+self.x, y+self.y,type='#fill this later')
 				row.append(col)
 			self.grid.append(row)
 	

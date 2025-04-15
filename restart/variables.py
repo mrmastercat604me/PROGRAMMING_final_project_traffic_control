@@ -12,9 +12,9 @@ FPS = 60
 
 #DIFFICULTIES
 difficulties_dict = {
-    "Easy" : {},
-    "Normal" : {},
-    "Hard" : {}
+	"Easy" : {},
+	"Normal" : {},
+	"Hard" : {}
 }
 difficulties_list = list(difficulties_dict.keys())
 
