@@ -25,12 +25,9 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#create any and all objects
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
-	test_square_surface = pygame.Surface((30,30))
-	test_square = pygame.Rect(0,0,30,30)
 
 	LeftClick = False
 	RightClick = False
-	test_num = 0
 	score = []
 
 	running = True
@@ -41,8 +38,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		#----------DRAW-EVERYTHING--------------#
 		grid_surface = draw_grid(grid_surface,grid,settings)
 		surface.blit(grid_surface,(GRID_X,GRID_Y))
-		pygame.draw.rect(test_square_surface,(255,255,255),test_square)
-		surface.blit(test_square_surface, (0,test_num))
 		#---------------------------------------#
 		#-------------INPUT-LOGIC----------------#
 		LeftClick = False
@@ -74,8 +69,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		screen.blit(surface, (0,0))
 		pygame.display.flip()
 		mainClock.tick(FPS)
-		print(test_num)
-		test_num += 1
 		#---------------------------#
 
 if __name__ == "__main__":
