@@ -11,8 +11,8 @@ def confirm_game_exit_popup(screen,surface):
     transparent_surface.fill((96,96,96,153))
     #------------------------------------------------#
     #----------------CREATE-THE-BUTTONS--------------#
-    confirm_text = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,255,255,))
-    confirm_text2 = Button(percent_of(25,SCREEN_WIDTH),percent_of(20,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,255,255,))
+    confirm_text = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(230,230,230))
+    confirm_text2 = Button(percent_of(25,SCREEN_WIDTH),percent_of(20,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(230,230,230))
     continue_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200,245))
     leave_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,10,10,245))
     #centre the buttons
@@ -22,7 +22,7 @@ def confirm_game_exit_popup(screen,surface):
     leave_button.centerx(percent_of(50,SCREEN_WIDTH))
     #set the text for the buttons
     confirm_text.set_text("Are you sure you want to leave?",font,(0,0,0))
-    confirm_text2.set_text("Score will be saved, game will reset.",font,(0,0,0))
+    confirm_text2.set_text("Score will be saved. Game will reset.",font,(0,0,0))
     continue_button.set_text("Continue Game",font,(0,0,0))
     leave_button.set_text("Leave to Menu",font,(0,0,0))
     #------------------------------------------------#

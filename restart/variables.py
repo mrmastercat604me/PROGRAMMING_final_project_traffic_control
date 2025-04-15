@@ -17,3 +17,9 @@ difficulties_dict = {
     "Hard" : {}
 }
 difficulties_list = list(difficulties_dict.keys())
+
+#GRID VARIABLES
+TILE_SIZE:int = 20
+GRID_WIDTH:int = 30
+GRID_HEIGHT:int = 30
+DIRECTIONS:list = [(0,-1),(0,1),(-1,0),(1,0)] #up, down, left, right
