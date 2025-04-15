@@ -81,4 +81,6 @@ def options_menu(screen, surface, BackgroundImage, scroll:int, difficulty:str="N
 		#----------------------#
 
 if __name__ == "__main__":
+	print()
 	print("Cannot run this file :(")
+	print()
