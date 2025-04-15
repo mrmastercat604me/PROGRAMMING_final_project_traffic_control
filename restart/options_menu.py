@@ -52,7 +52,9 @@ def options_menu(screen, surface:pygame.Surface, BackgroundImage, scroll:int, di
 				difficulty_button.set_text(difficulty,font,(0,0,0))
 				
 				settings.update({"difficulty":difficulty})
-				
+			if RightClick:
+				#logic for advanced options that returns the custom settings
+				pass
 		LeftClick = False
 		RightClick = False
 		#------PYGAME-EVENT-HANDLING--------#
