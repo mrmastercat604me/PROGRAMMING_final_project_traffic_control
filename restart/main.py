@@ -3,6 +3,7 @@ from functions import *
 from classes import *
 from variables import *
 from options_menu import options_menu
+from game import game
 
 pygame.init()
 
@@ -34,6 +35,7 @@ def main_menu():
 	LeftClick = False
 	RightClick = False
 	difficulty = "Normal"
+	settings = difficulties_dict.get("Normal")
 
 	running = True
 	while running:
@@ -55,6 +57,7 @@ def main_menu():
 		if start_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
 				print("Play Game")
+				score = game(screen,surface,settings)
 				#call function from other files and run #just like in blastroids project
 			if RightClick:
 				print("Play Right Click")

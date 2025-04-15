@@ -5,7 +5,17 @@ from variables import *
 
 pygame.init()
 
-def game(screen, surface, settings):
+def game(screen, surface:pygame.Surface, settings:list)->list:
+    '''
+    Function to create a new "window" by blanking the surface and drawing everything to the surface. The surface is then blit to the screen.
+
+    screen = pygame.display.set_mode(), surface = pygame.Surface, settings = list (custom or preset)
+
+    Uses surface to draw all the new features. The settings is used for certain difficulty information.
+    The screen paramtre is used to blit the surface to the screen properly.
+
+    return settings list to be able to be modified and kept while the window stays active.
+    '''
     #create any and all objects
 
     LeftClick = False
@@ -16,6 +26,8 @@ def game(screen, surface, settings):
     while running:
         #--------------UPDATE-BACKGROUND---------#
         surface.fill((0,0,0,0))
+        #---------------------------------------#
+        #----------DRAW-EVERYTHING--------------#
         #---------------------------------------#
         #-------------INPUT-LOGIC----------------#
         LeftClick = False
