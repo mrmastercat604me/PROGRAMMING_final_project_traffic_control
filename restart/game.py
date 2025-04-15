@@ -50,7 +50,7 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     LeftClick = False
-                if event.butotn == 3:
+                if event.button == 3:
                     RightClick = False
         #--------------------------------------------------#
         #----------DRAW-THE-SURFACE-TO-THE-SCREEN-----------#
