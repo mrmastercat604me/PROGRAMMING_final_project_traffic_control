@@ -2,8 +2,10 @@ import pygame, sys
 from functions import *
 from classes import *
 from variables import *
+from popups import *
 
 pygame.init()
+
 
 def game(screen, surface:pygame.Surface, settings:list)->list:
     '''
@@ -40,7 +42,8 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return score
+                if confirm_game_exit_popup(screen,surface):
+                    return score
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1: #if left click
