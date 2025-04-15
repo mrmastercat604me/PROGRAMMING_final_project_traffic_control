@@ -17,10 +17,12 @@ def options_menu(screen, surface:pygame.Surface, BackgroundImage, scroll:int, di
 	return scroll and a dict of modified settings.
 	'''
 	#create the buttons
+	title_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,255,255,0))
 	difficulty_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
 	#centre the buttons
 	difficulty_button.centerx(percent_of(50,SCREEN_WIDTH))
 	#set text for the buttons
+	title_button.set_text("Options",font,(0,0,0))
 	difficulty_button.set_text(difficulty,font,(0,0,0))
 
 	#TOGGLE_ABLE VARIABLES
@@ -35,6 +37,7 @@ def options_menu(screen, surface:pygame.Surface, BackgroundImage, scroll:int, di
 		scroll = horz_scroll_image(BackgroundImage,surface,scroll=scroll)
 		#---------------------------------------#
 		#---------DRAW-THE-BUTTONS-----------------#
+		title_button.draw()
 		difficulty_button.draw()
 		#---------------------------------------#
 		#------BUTTON-LOGIC--------------#
