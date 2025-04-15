@@ -24,6 +24,7 @@ def update_grid(grid,settings)->'Grid':
 	pass
 
 def select_edge_tile(grid,count:int=1):
+	#add optional except tile
 	if count > 4 or count <= 0:
 		return None
 	
