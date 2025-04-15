@@ -5,7 +5,7 @@ from variables import *
 
 pygame.init()
 
-def options_menu(screen, surface, BackgroundImage, scroll:int, difficulty:str="Normal"):
+def options_menu(screen, surface:pygame.Surface, BackgroundImage, scroll:int, difficulty:str="Normal"):
 	'''
 	Function to create a new "window" by blanking the surface and drawing everyhting to the surface. The surface is then blit to the screen.
 
@@ -14,7 +14,7 @@ def options_menu(screen, surface, BackgroundImage, scroll:int, difficulty:str="N
 	Uses surface to draw all the new features. BackgroundImage and scroll are used to continue the scroll from where it left off.
 	The screen parametre is used to blit the surface to the screen properly.
 
-	return scroll and a dict of modified settings
+	return scroll and a dict of modified settings.
 	'''
 	#create the buttons
 	difficulty_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
