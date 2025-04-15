@@ -25,6 +25,7 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#create any and all objects
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
+	print(select_edge_tile(grid))
 
 	LeftClick = False
 	RightClick = False
@@ -36,7 +37,7 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		surface.fill((0,0,0,0))
 		#---------------------------------------#
 		#----------DRAW-EVERYTHING--------------#
-		grid_surface = draw_grid(grid_surface,grid,settings)
+		grid_surface = draw_grid(grid_surface,grid)
 		surface.blit(grid_surface,(GRID_X,GRID_Y))
 		#---------------------------------------#
 		#-------------INPUT-LOGIC----------------#
