@@ -43,10 +43,9 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None):
 		while True:
 			x, y = coord_func() #call each lambda
 			random_tile = grid.get_tile_with_index(x=x,y=y)
-			if except_tile:
-				if random_tile != except_tile:
-					random_tiles_list.append(random_tile)
-					break #break out of loop to continue to next edge tile
+			if except_tile is None or random_tile != except_tile:
+				random_tiles_list.append(random_tile)
+				break #break out of loop to continue to next edge tile
 	#----------#
 	#-----RETURN-TILE(S)-----#
 	if count == 1:
@@ -54,3 +53,4 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None):
 	else:
 		return_list = list(random.sample(population=random_tiles_list,k=count)) #takes count many items from the population without any repeating elements
 		return return_list
+

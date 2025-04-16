@@ -121,14 +121,14 @@ class DestinationPair:
 		if isinstance(spawn_pos,tuple):
 			spawner_x, spawner_y = spawn_pos
 			self.spawner_tile = grid.get_tile_with_index(x=spawner_x,y=spawner_y)
-		elif isinstance(spawn_pos,'Tile'):
+		elif isinstance(spawn_pos,Tile):
 			self.spawner_tile = spawn_pos
 
 		if isinstance(destination_pos,tuple):
 			destination_x, destination_y = destination_pos
 			self.destination_tile = grid.get_tile_with_index(x=destination_x,y=destination_y)
-		elif isinstance(destination_pos,'Tile'):
+		elif isinstance(destination_pos,Tile):
 			self.destination_tile = destination_pos
-			
+
 		self.colour = colour
 	
