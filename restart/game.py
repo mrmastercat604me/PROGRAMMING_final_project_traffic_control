@@ -25,8 +25,11 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#create any and all objects
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
-	
+
 	#GENERATE PAIRS
+	# implement an except edge [in (select_edge_tile)?] and possibly return an edge
+	# that way when we make pairs we can ensure that the two are on differet edges
+	# maybe implement a mandatory radius that the tiles have to be at or exceed?
 	colour_count = settings.get("colours")
 	colour_list = settings.get("colour_list")
 	colours = random.sample(list(colour_list.keys()),colour_count)
