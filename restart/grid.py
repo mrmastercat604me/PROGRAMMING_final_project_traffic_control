@@ -33,7 +33,7 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None):
 	#0 to y_max are valid indexes
 	#-----DECLARE-EDGES-AND-LAMBDA-TO-CREATE-RANDOM-X,Y-VALUES-----#
 	edges = {
-		#edge name		#(generate random x value, generate random y value)
+		#edge name		#(generate random x value, generate random y value) when called
 		"top": lambda: (random.randint(0,x_max),random.randint(0,LOCATION_SPAWN_RANGE-1)),
 		"left": lambda: (random.randint(0,LOCATION_SPAWN_RANGE-1),random.randint(0,y_max)),
 		"bottom": lambda: (random.randint(0,x_max),random.randint(y_max-LOCATION_SPAWN_RANGE-1,y_max)),
