@@ -34,7 +34,7 @@ def main_menu():
 	#OTHER VARIABLES
 	LeftClick = False
 	RightClick = False
-	difficulty = "Normal"
+	difficulty = "Easy"
 	settings = difficulties_dict.get("Normal")
 
 	running = True
