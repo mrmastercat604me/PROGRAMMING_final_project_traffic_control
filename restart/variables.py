@@ -10,6 +10,37 @@ font = pygame.font.SysFont(None,75)
 mainClock = pygame.time.Clock()
 FPS = 60
 
+#COLOURS
+COLOURS = {
+    "maroon": (123,0,0),
+    "firebrick": (167,0,0),
+	"red": (255,0,0),
+    "darkorange": (255,123,0),
+    "orange": (255,167,0),
+    "gold": (255,211,0),
+    "yellow": (255,255,0),
+    "yellowgreen": (167,255,0),
+    "chartreuse": (123,255,0),
+    "lime": (45,255,0),
+	"green": (0,255,0),
+    "springgreen": (0,255,123),
+    "mediumspringgreen": (0,255,167),
+    "aquamarine": (0,255,211),
+    "turquoise": (0,255,228),
+    "aqua": (0,255,255),
+    "darkturquoise": (0,227,255),
+    "skyblue": (0,218,255),
+    "deepskyblue": (0,211,255),
+    "cornflowerblue": (0,167,255),
+    "dodgerblue": (0,143,255),
+    "royalblue": (0, 116,255),
+    "mediumslateblue": (0,93,255),
+    "mediumblue": (0,64,255),
+    "blue": (0,0,255),
+    "darkblue": (0,0,152),
+    "navy": (0,0,118),
+    "midnightblue": (0,0,75)
+}
 #GRID VARIABLES
 TILE_SIZE:int = 20
 GRID_WIDTH:int = 30
@@ -22,10 +53,11 @@ LOCATION_SPAWN_RANGE = 3 #how many tiles from the edge (including the edge tile)
 #DIFFICULTIES
 difficulties_dict = {
 	"Easy" : {
-        "pairs": 3,
-        "obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
-        "car_spawn_rate": 4,#cars to spawn per MINUTE
-        "car_speed": 2 #pixels per frame update
+		"colours": 3,
+        "pairs": 1,
+		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
+		"car_spawn_rate": 4,#cars to spawn per MINUTE
+		"car_speed": 1 #pixels per frame update
 	},
 	"Normal" : {},
 	"Hard" : {}

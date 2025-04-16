@@ -25,6 +25,18 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#create any and all objects
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
+	#GENERATE PAIRS
+	colour_count = settings.get("colours")
+	colours = random.sample(list(COLOURS.keys()),colour_count)
+	pairs = settings.get("pairs")
+	tiles_in_pairs = []
+	for colour in colours:
+		for pair in range(pairs):
+			location1 = select_edge_tile(grid,1,tiles_in_pairs)
+			tiles_in_pairs.append(location1)
+			location2 = select_edge_tile(grid,1,tiles_in_pairs)
+			tiles_in_pairs.append(location2)
+			pair1 = DestinationPair(grid,location1,location2,colour)
 
 	LeftClick = False
 	RightClick = False
@@ -45,10 +57,9 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		#---------------------------------------#
 		#-------------INPUT-LOGIC----------------#
 		if set_key:
-			#when this function runs the game crashes for some reason.
 			location1 = select_edge_tile(grid,1)
 			location2 = select_edge_tile(grid,1,location1)
-			pair = DestinationPair(grid,location1,location2,(255,0,0))
+			pair1 = DestinationPair(grid,location1,location2,(255,0,0))
 		LeftClick = False
 		RightClick = False
 		set_key = False

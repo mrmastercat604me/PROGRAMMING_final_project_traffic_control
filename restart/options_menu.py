@@ -51,7 +51,7 @@ def options_menu(screen, surface:pygame.Surface, BackgroundImage, scroll:int, di
 				difficulty = difficulties_list[new_difficulty_index]
 				difficulty_button.set_text(difficulty,font,(0,0,0))
 				
-				settings.update({"difficulty":difficulty})
+				settings = difficulties_dict.get(difficulty)
 			if RightClick:
 				#logic for advanced options that returns the custom settings
 				pass

@@ -131,4 +131,9 @@ class DestinationPair:
 			self.destination_tile = destination_pos
 
 		self.colour = colour
+		self.pair = [self.spawner_tile,self.destination_tile]
+		self.update_visual()
 	
+	def update_visual(self):
+		for tile in self.pair:
+			tile.colour = self.colour

@@ -43,7 +43,7 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None):
 		while True:
 			x, y = coord_func() #call each lambda
 			random_tile = grid.get_tile_with_index(x=x,y=y)
-			if except_tile is None or random_tile != except_tile:
+			if except_tile is None or (isinstance(except_tile,Tile) and random_tile != except_tile) or (isinstance(except_tile,list) and random_tile not in except_tile):
 				random_tiles_list.append(random_tile)
 				break #break out of loop to continue to next edge tile
 	#----------#
