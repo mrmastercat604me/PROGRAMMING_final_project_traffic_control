@@ -56,10 +56,19 @@ difficulties_dict = {
 		"colours": 3,
         "pairs": 1,
 		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
-		"car_spawn_rate": 4,#cars to spawn per MINUTE
-		"car_speed": 1 #pixels per frame update
+		"car_spawn_rate": 4#cars to spawn per MINUTE
 	},
-	"Normal" : {},
-	"Hard" : {}
+	"Normal" : {
+        "colours": 5,
+        "pairs": 3,
+        "obstacles": (GRID_HEIGHT*GRID_WIDTH)//15,
+        "car_spawn_rate": 12 #cars to spawn per MINUTE
+	},
+	"Hard" : {
+        "colours":10,
+        "pairs":4,
+        "obstacles": (GRID_HEIGHT*GRID_WIDTH) // 10,
+        "car_spawn_rate": 20
+	}
 }
 difficulties_list = list(difficulties_dict.keys())
