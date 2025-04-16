@@ -51,3 +51,9 @@ def horz_scroll_image(image,surface,y_pos=0,scroll=0)->int:
 	if abs(scroll) > image_width:
 		scroll = 0
 	return scroll
+
+def manhattan_distance(pos1,pos2):
+	pos1_x, pos1_y = pos1
+	pos2_x, pos2_y = pos2
+	manhattan_distance = abs(pos1_x - pos2_x) + abs(pos1_y - pos2_y)
+	return manhattan_distance

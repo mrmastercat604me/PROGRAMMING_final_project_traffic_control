@@ -47,9 +47,9 @@ class Tile:
 		return (self.x == node.x) and (self.y == node.y)
 	
 	def generate_manhattan_distance(self,node:'Tile') -> int:
-		pos1_x, pos1_y = self.x, self.y
-		pos2_x, pos2_y = node.x, node.y
-		manhattan_distance = abs(pos1_x - pos2_x) + abs(pos1_y - pos2_y)
+		self_node = (self.x, self.y)
+		node_1 = (node.x, node.y)
+		manhattan_distance = manhattan_distance(self_node,node_1)
 		return manhattan_distance
 	
 	def set_tile_values(self,g:int,h:int,f:int):
