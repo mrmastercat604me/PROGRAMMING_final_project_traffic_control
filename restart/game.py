@@ -25,11 +25,14 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#create any and all objects
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
-	print(select_edge_tile(grid))
 
 	LeftClick = False
 	RightClick = False
+	set_key = False
 	score = []
+
+	frames = 0
+	seconds = 0
 
 	running = True
 	while running:
@@ -41,9 +44,20 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		surface.blit(grid_surface,(GRID_X,GRID_Y))
 		#---------------------------------------#
 		#-------------INPUT-LOGIC----------------#
+		if set_key:
+			#when this function runs the game crashes for some reason.
+			location1 = select_edge_tile(grid,1)
+			location2 = select_edge_tile(grid,1,location1)
+			pair = DestinationPair(grid,location1,location2,(255,0,0))
 		LeftClick = False
 		RightClick = False
+		set_key = False
 		#-----------------------------------------#
+		#------------TIMED-LOGIC---------------#
+		if frames == FPS:
+			seconds += 1
+			frames = 0
+		#-----------------------------------#
 		#------------PYGAME-EVENT-HANDLING----------#
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -64,12 +78,20 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 					LeftClick = False
 				if event.button == 3:
 					RightClick = False
+
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_s:
+					set_key = True
+			if event.type == pygame.KEYUP:
+				if event.key == pygame.K_s:
+					set_key = False
 		#--------------------------------------------------#
 		#----------DRAW-THE-SURFACE-TO-THE-SCREEN-----------#
 		screen.fill((0,0,0))
 		screen.blit(surface, (0,0))
 		pygame.display.flip()
 		mainClock.tick(FPS)
+		frames += 1
 		#---------------------------#
 
 if __name__ == "__main__":

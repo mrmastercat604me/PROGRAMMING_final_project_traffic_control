@@ -15,13 +15,10 @@ def draw_grid(surface, grid)->'pygame.Surface':
 
 			#handle the type drawing logic here
 
-			pygame.draw.rect(surface,(255,255,255),create_rect)
+			pygame.draw.rect(surface,tile.colour,create_rect)
 			#draw border around tile
 			pygame.draw.rect(surface,(0,0,0),create_rect, 1)
 	return surface
-
-def update_grid(grid,settings)->'Grid':
-	pass
 
 def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None):
 	if count > 4 or count <= 0:
@@ -45,10 +42,11 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None):
 	for edge, coord_func in edges.items():
 		while True:
 			x, y = coord_func() #call each lambda
-			random_tile = grid.get_tile_within_area(x=x,y=y)
-			if random_tile != except_tile:
-				random_tiles_list.append(random_tile)
-				break #break out of loop to continue to next edge tile
+			random_tile = grid.get_tile_with_index(x=x,y=y)
+			if except_tile:
+				if random_tile != except_tile:
+					random_tiles_list.append(random_tile)
+					break #break out of loop to continue to next edge tile
 	#----------#
 	#-----RETURN-TILE(S)-----#
 	if count == 1:
@@ -56,4 +54,3 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None):
 	else:
 		return_list = list(random.sample(population=random_tiles_list,k=count)) #takes count many items from the population without any repeating elements
 		return return_list
-

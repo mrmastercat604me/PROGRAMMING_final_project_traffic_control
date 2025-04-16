@@ -30,10 +30,11 @@ class Button():
 			draw_text(self.text ,self.font,self.text_color, self.surface, 0,0, self.rect)
 
 class Tile:
-	def __init__(self,x:int,y:int,type:str):
+	def __init__(self,x:int,y:int,type:str,colour=(255,255,255)):
 		self.x = x
 		self.y = y
 		self.type = type
+		self.colour = colour
 		self.g = float('inf')
 		self.h = float('inf')
 		self.f = float('inf')
@@ -85,7 +86,7 @@ class Grid:
 				row.append(col)
 			self.grid.append(row)
 	
-	def get_tile_within_area(self, x:int, y:int) -> 'Tile':
+	def get_tile_with_index(self, x:int, y:int) -> 'Tile':
 		if (0 <= x and x < self.width) and (0 <= y and y < self.height):
 			return self.grid[y][x]
 		else:
@@ -94,18 +95,18 @@ class Grid:
 	def get_tile_with_pos(self,x:int,y:int) -> 'Tile':
 		grid_x = ((x-self.x) // TILE_SIZE) -1
 		grid_y = ((y-self.y) // TILE_SIZE) -1
-		return self.get_tile_within_area(x=grid_x, y=grid_y)
+		return self.get_tile_with_index(x=grid_x, y=grid_y)
 	
 	def get_neighbours(self,tile:'Tile',valid_path_only:bool=True) -> list:
 		neighbours = []
-		if self.get_tile_within_area(tile.x, tile.y):
+		if self.get_tile_with_index(tile.x, tile.y):
 			for direction in DIRECTIONS:
 				x = tile.x
 				y = tile.y
 				x_shift, y_shift = direction
 				x += x_shift
 				y += y_shift
-				if self.get_tile_within_area(x,y) and ((valid_path_only and self.grid[y][x].type == "path") or not valid_path_only):
+				if self.get_tile_with_index(x,y) and ((valid_path_only and self.grid[y][x].type == "path") or not valid_path_only):
 					neighbours.append(self.grid[y][x])
 			return neighbours
 		else:
@@ -114,4 +115,20 @@ class Grid:
 	def generate_neighbour_values(self,tile:'Tile',home_tile:'Tile',goal_tile:'Tile'):
 		for neighbour in self.get_neighbours(tile):
 			neighbour.generate_tile_values(home_tile,goal_tile,grid=self)
+
+class DestinationPair:
+	def __init__(self, grid:'Grid', spawn_pos, destination_pos, colour:tuple):
+		if isinstance(spawn_pos,tuple):
+			spawner_x, spawner_y = spawn_pos
+			self.spawner_tile = grid.get_tile_with_index(x=spawner_x,y=spawner_y)
+		elif isinstance(spawn_pos,'Tile'):
+			self.spawner_tile = spawn_pos
+
+		if isinstance(destination_pos,tuple):
+			destination_x, destination_y = destination_pos
+			self.destination_tile = grid.get_tile_with_index(x=destination_x,y=destination_y)
+		elif isinstance(destination_pos,'Tile'):
+			self.destination_tile = destination_pos
+			
+		self.colour = colour
 	
