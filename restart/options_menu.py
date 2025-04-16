@@ -50,8 +50,6 @@ def options_menu(screen, surface:pygame.Surface, BackgroundImage, scroll:int, di
 					new_difficulty_index = 0
 				difficulty = difficulties_list[new_difficulty_index]
 				difficulty_button.set_text(difficulty,font,(0,0,0))
-				
-				settings = difficulties_dict.get(difficulty)
 			if RightClick:
 				#logic for advanced options that returns the custom settings
 				pass
@@ -65,7 +63,9 @@ def options_menu(screen, surface:pygame.Surface, BackgroundImage, scroll:int, di
 				sys.exit()
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
-					return scroll, settings
+					if difficulty in difficulties_list: #if difficulty is a preset
+						settings = difficulties_dict.get(difficulty)
+					return scroll, (difficulty, settings)
 				
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1: #if left click

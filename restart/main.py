@@ -35,7 +35,7 @@ def main_menu():
 	LeftClick = False
 	RightClick = False
 	difficulty = "Easy"
-	settings = difficulties_dict.get("Normal")
+	settings = difficulties_dict.get(difficulty)
 
 	running = True
 	while running:
@@ -64,9 +64,8 @@ def main_menu():
 		if options_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
 				print("Options Menu")
-				scroll, settings = options_menu(screen,surface,BackgroundImage,scroll,difficulty)
-				if "difficulty" in list(settings.keys()):
-					difficulty = settings.get("difficulty")
+				#PROBLEM HERE WITH HOW SETTINGS IS OUTPUT AND HOW THIS INTERPRETS THE DIFFICULTY FROM THAT
+				scroll, (difficulty, settings) = options_menu(screen,surface,BackgroundImage,scroll,difficulty)
 			if RightClick:
 				print("Options Right Click")
 		LeftClick = False
