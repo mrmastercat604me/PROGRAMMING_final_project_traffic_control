@@ -25,9 +25,11 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#create any and all objects
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
+	
 	#GENERATE PAIRS
 	colour_count = settings.get("colours")
-	colours = random.sample(list(COLOURS.keys()),colour_count)
+	colour_list = settings.get("colour_list")
+	colours = random.sample(list(colour_list.keys()),colour_count)
 	pairs = settings.get("pairs")
 	tiles_in_pairs = []
 	for colour in colours:
