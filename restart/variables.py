@@ -93,8 +93,8 @@ difficulties_dict = {
 	"Normal" : {
 		"colour_count": 5,
         "colour_list": NORMAL_COLOURS,
-		"pairs": 3,
-		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//15,
+		"pairs": 2,
+		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
 		"car_spawn_rate": 12 #cars to spawn per MINUTE
 	},
 	"Hard" : {
