@@ -40,7 +40,7 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 			print("BEFORE FREEZE")
 			location1, location1_edge = select_edge_tile(grid,1,except_tile=tiles_in_pairs)
 			tiles_in_pairs.append(location1)
-			location2, location2_edge = select_edge_tile(grid,1,except_tile=tiles_in_pairs,except_edge=location1_edge,avoid_radius=3)
+			location2, location2_edge = select_edge_tile(grid,1,except_tile=tiles_in_pairs,except_edge=location1_edge)
 			tiles_in_pairs.append(location2)
 			pair1 = DestinationPair(grid,location1,location2,colour)
 
