@@ -23,13 +23,16 @@ def main_menu():
 	title_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,255,255,0))
 	start_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
 	options_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
+	exit_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(65,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
 	#centre buttons
 	start_button.centerx(percent_of(50,SCREEN_WIDTH))
 	options_button.centerx(percent_of(50,SCREEN_WIDTH))
+	exit_button.centerx(percent_of(50,SCREEN_WIDTH))
 	#set text for the buttons
 	title_button.set_text("Game Name",font,(0,0,0))
 	start_button.set_text("Start",font,(0,0,0))
 	options_button.set_text("Options",font,(0,0,0))
+	exit_button.set_text("Exit",font,(0,0,0))
 
 	#OTHER VARIABLES
 	LeftClick = False
@@ -47,6 +50,7 @@ def main_menu():
 		title_button.draw()
 		start_button.draw()
 		options_button.draw()
+		exit_button.draw()
 		#--------------------------------------------#
 		#----------BUTTON-LOGIC--------#
 		mouse_x,mouse_y = pygame.mouse.get_pos()
@@ -69,6 +73,9 @@ def main_menu():
 				scroll, (difficulty, settings) = options_menu(screen,surface,BackgroundImage,scroll,difficulty)
 			if RightClick:
 				print("Options Right Click")
+		if exit_button.collidepoint((mouse_x,mouse_y)):
+			if LeftClick:
+				running = False
 		LeftClick = False
 		RightClick = False
 		#------------------------------------------#
@@ -76,9 +83,6 @@ def main_menu():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
-					running = False
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1: #if left click
 					LeftClick = True
