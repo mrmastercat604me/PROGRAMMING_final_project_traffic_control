@@ -26,10 +26,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
 
-	for row in grid.grid:
-		for tile in row:
-			print(f"{tile} = {tile.colour}")
-
 	#GENERATE PAIRS
 	# maybe implement a mandatory radius that the tiles have to be at or exceed?
 

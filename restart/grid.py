@@ -14,8 +14,6 @@ def draw_grid(surface, grid)->'pygame.Surface':
 			create_rect = pygame.Rect(x*TILE_SIZE,y*TILE_SIZE,TILE_SIZE,TILE_SIZE)
 
 			#handle the type drawing logic here
-			# print(tile.colour) 
-			# ERROR TILE.COLOUR GETS ERROR FROM SOMEWHERE
 			pygame.draw.rect(surface,tile.colour,create_rect)
 			#draw border around tile
 			pygame.draw.rect(surface,(0,0,0),create_rect, 1)
