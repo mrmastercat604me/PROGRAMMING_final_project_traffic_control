@@ -28,6 +28,7 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 
 	#GENERATE PAIRS
 	# maybe implement a mandatory radius that the tiles have to be at or exceed?
+	# BE CAREFUL WITH THIS ^^^ MODIFY THE POPULATING SO IT CAN IMPLEMENT THIS AS A POSSIBILITY.
 
 	colour_count = settings.get("colour_count") #return an int
 	colours_dict = settings.get("colour_list") #return a dict of colours and names
