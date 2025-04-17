@@ -44,7 +44,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 
 	LeftClick = False
 	RightClick = False
-	set_key = False
 	score = []
 
 	frames = 0
@@ -60,13 +59,8 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		surface.blit(grid_surface,(GRID_X,GRID_Y))
 		#---------------------------------------#
 		#-------------INPUT-LOGIC----------------#
-		if set_key:
-			location1 = select_edge_tile(grid,1)
-			location2 = select_edge_tile(grid,1,location1)
-			pair1 = DestinationPair(grid,location1,location2,(255,0,0))
 		LeftClick = False
 		RightClick = False
-		set_key = False
 		#-----------------------------------------#
 		#------------TIMED-LOGIC---------------#
 		if frames == FPS:
@@ -94,12 +88,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 				if event.button == 3:
 					RightClick = False
 
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_s:
-					set_key = True
-			if event.type == pygame.KEYUP:
-				if event.key == pygame.K_s:
-					set_key = False
 		#--------------------------------------------------#
 		#----------DRAW-THE-SURFACE-TO-THE-SCREEN-----------#
 		screen.fill((0,0,0))
