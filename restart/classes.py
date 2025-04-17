@@ -46,6 +46,9 @@ class Tile:
 	def __eq__(self,node:'Tile') -> bool:
 		return (self.x == node.x) and (self.y == node.y)
 	
+	def __repr__(self):
+		return f"({self.x}, {self.y})"
+	
 	def generate_manhattan_distance(self,node:'Tile') -> int:
 		self_node = (self.x, self.y)
 		node_1 = (node.x, node.y)

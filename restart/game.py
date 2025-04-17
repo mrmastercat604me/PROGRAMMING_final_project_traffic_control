@@ -26,20 +26,23 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
 
+	for row in grid.grid:
+		for tile in row:
+			print(f"{tile} = {tile.colour}")
+
 	#GENERATE PAIRS
-	# implement an except edge [in (select_edge_tile)?] and possibly return an edge
-	# that way when we make pairs we can ensure that the two are on differet edges
 	# maybe implement a mandatory radius that the tiles have to be at or exceed?
-	colour_count = settings.get("colours")
-	colour_list = settings.get("colour_list")
-	colours = random.sample(list(colour_list.keys()),colour_count)
+
+	colour_count = settings.get("colour_count") #return an int
+	colours_dict = settings.get("colour_list") #return a dict of colours and names
+	colours_list = random.sample(list(colours_dict.values()),colour_count)
 	pairs = settings.get("pairs")
 	tiles_in_pairs = []
-	for colour in colours:
+	for colour in colours_list:
 		for pair in range(pairs):
-			location1 = select_edge_tile(grid,1,tiles_in_pairs)
+			location1, location1_edge = select_edge_tile(grid,1,tiles_in_pairs)
 			tiles_in_pairs.append(location1)
-			location2 = select_edge_tile(grid,1,tiles_in_pairs)
+			location2, location2_edge = select_edge_tile(grid,1,tiles_in_pairs,location1_edge)
 			tiles_in_pairs.append(location2)
 			pair1 = DestinationPair(grid,location1,location2,colour)
 

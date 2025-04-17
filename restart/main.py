@@ -35,10 +35,11 @@ def main_menu():
 	LeftClick = False
 	RightClick = False
 	difficulty = "Easy"
-	settings = difficulties_dict.get(difficulty)
 
 	running = True
 	while running:
+		if difficulty in difficulties_list:
+			settings = difficulties_dict.get(difficulty)
 		#----UPDATE-SCREEN-BACKGROUND-SCROLL-------#
 		scroll = horz_scroll_image(BackgroundImage,surface,scroll=scroll)
 		#----------------------------------------#

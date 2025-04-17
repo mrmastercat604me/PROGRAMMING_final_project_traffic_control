@@ -14,7 +14,7 @@ FPS = 60
 EASY_COLOURS = {
     "red": (255,0,0),
     "orange": (255,181,0),
-    "yellow": (255,2550,0),
+    "yellow": (255,255,0),
     "green": (0,255,0),
     "aqua": (0,255,252),
     "blue":(0,0,255),
@@ -84,22 +84,22 @@ LOCATION_SPAWN_RANGE = 3 #how many tiles from the edge (including the edge tile)
 #DIFFICULTIES
 difficulties_dict = {
 	"Easy" : {
-		"colours": 3,
+		"colour_count": 3,
         "colour_list": EASY_COLOURS,
 		"pairs": 1,
 		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
 		"car_spawn_rate": 4#cars to spawn per MINUTE
 	},
 	"Normal" : {
-		"colours": 5,
-        "colours_list": NORMAL_COLOURS,
+		"colour_count": 5,
+        "colour_list": NORMAL_COLOURS,
 		"pairs": 3,
 		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//15,
 		"car_spawn_rate": 12 #cars to spawn per MINUTE
 	},
 	"Hard" : {
-		"colours":10,
-        "colours_list": HARD_COLOURS,
+		"colour_count":10,
+        "colour_list": HARD_COLOURS,
 		"pairs":4,
 		"obstacles": (GRID_HEIGHT*GRID_WIDTH) // 10,
 		"car_spawn_rate": 20
