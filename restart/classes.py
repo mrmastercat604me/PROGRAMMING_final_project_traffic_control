@@ -33,6 +33,7 @@ class Tile:
 	def __init__(self,x:int,y:int,type:str,colour=(255,255,255)):
 		self.x = x
 		self.y = y
+		self.pos = (x,y)
 		self.type = type
 		self.colour = colour
 		self.g = float('inf')

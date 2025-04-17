@@ -27,6 +27,8 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None,except_edge:str=No
 
 	The argument "except_edge" is an edge to avoid generating a tile from
 
+	The argument "avoid_radius" needs "except_tile"
+
 	Return a tuple of (tile, edge) if count == 1,
 
 	Returns a list of tuples [(tile,edge),(tile,edge)...] if count > 1
@@ -60,12 +62,22 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None,except_edge:str=No
 		if except_edge:
 			if edge == except_edge:
 				continue
-		while True:
+		finding = True
+		while finding:
 			x, y = coord_func() #call each lambda
 			random_tile = grid.get_tile_with_index(x=x,y=y)
-			if except_tile is None or (isinstance(except_tile,Tile) and random_tile != except_tile) or (isinstance(except_tile,list) and random_tile not in except_tile):
+			if except_tile is None:
 				random_tiles_list.append((random_tile,edge))
+				finding = False
 				break #break out of loop to continue to next edge tile
+			if (isinstance(except_tile,Tile) and random_tile != except_tile):
+				random_tiles_list.append((random_tile,edge))
+				finding = False
+				break
+			if (isinstance(except_tile,list) and random_tile not in except_tile):
+				random_tiles_list.append((random_tile,edge))
+				finding = False
+				break
 	#----------#
 	#-----RETURN-TILE(S)-----#
 	if count == 1:

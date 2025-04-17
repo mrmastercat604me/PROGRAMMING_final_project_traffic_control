@@ -36,9 +36,10 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	tiles_in_pairs = []
 	for colour in colours_list:
 		for pair in range(pairs):
-			location1, location1_edge = select_edge_tile(grid,1,tiles_in_pairs)
+			print("BEFORE FREEZE")
+			location1, location1_edge = select_edge_tile(grid,1,except_tile=tiles_in_pairs)
 			tiles_in_pairs.append(location1)
-			location2, location2_edge = select_edge_tile(grid,1,tiles_in_pairs,location1_edge)
+			location2, location2_edge = select_edge_tile(grid,1,except_tile=tiles_in_pairs,except_edge=location1_edge,avoid_radius=3)
 			tiles_in_pairs.append(location2)
 			pair1 = DestinationPair(grid,location1,location2,colour)
 
