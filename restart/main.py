@@ -6,7 +6,6 @@ from options_menu import options_menu
 from game import game
 
 pygame.init()
-log = DebugFile("log.txt")
 
 def main_menu():
 	#create the main screen
@@ -72,7 +71,7 @@ def main_menu():
 				log.write("Options Menu Button Left Clicked")
 				#PROBLEM HERE WITH HOW SETTINGS IS OUTPUT AND HOW THIS INTERPRETS THE DIFFICULTY FROM THAT
 				scroll, (difficulty, settings) = options_menu(screen,surface,BackgroundImage,scroll,difficulty)
-				log.write(f"Variables after closing Options:\nDifficulty_str: {difficulty}, Settings: {settings}")
+				log.write(f"Variables after closing Options:\n    Difficulty_str: {difficulty},\n    Settings: {settings}")
 			if RightClick:
 				log.write("Options Button Right Clicked")
 		if exit_button.collidepoint((mouse_x,mouse_y)):
@@ -104,6 +103,8 @@ def main_menu():
 		#----------------------#
 
 if __name__ == "__main__":
+	log = DebugFile("log.txt")
+	log.clear()
 	main_menu()
 	pygame.quit()
 	sys.exit()

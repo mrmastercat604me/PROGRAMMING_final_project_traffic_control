@@ -148,8 +148,14 @@ class DebugFile:
 	
 	def write(self, text:str):
 		with open(self.file,"a+") as f:
-			f.seek(-1)
-			f.write(text)
+			# f.seek()
+			f.write(text+"\n")
+			f.truncate()
+		return
+	
+	def clear(self):
+		with open(self.file,"w+") as f:
+			f.write("")
 			f.truncate()
 		return
 
