@@ -29,21 +29,8 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#GENERATE PAIRS
 	# maybe implement a mandatory radius that the tiles have to be at or exceed?
 	# BE CAREFUL WITH THIS ^^^ MODIFY THE POPULATING SO IT CAN IMPLEMENT THIS AS A POSSIBILITY.
-
-	colour_count = settings.get("colour_count") #return an int
-	colours_dict = settings.get("colour_list") #return a dict of colours and names
-	colours_list = random.sample(list(colours_dict.values()),colour_count)
-	pairs = settings.get("pairs")
-	edge_range = settings.get("edge_range")
-	tiles_in_pairs = []
-	for colour in colours_list:
-		for pair in range(pairs):
-			location1, location1_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs)
-			tiles_in_pairs.append(location1)
-			location2, location2_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs,except_edge=location1_edge)
-			tiles_in_pairs.append(location2)
-			pair1 = DestinationPair(grid,location1,location2,colour)
-
+	populate_destinations(grid,settings)
+	
 	LeftClick = False
 	RightClick = False
 	score = []
