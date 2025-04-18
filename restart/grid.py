@@ -19,7 +19,7 @@ def draw_grid(surface, grid)->'pygame.Surface':
 			pygame.draw.rect(surface,(0,0,0),create_rect, 1)
 	return surface
 
-def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None,except_edge:str=None):
+def select_edge_tile(grid,count:int=1,edge_range:int=3,except_tile:'Tile'=None,except_edge:str=None):
 	'''
 	The argument "count" is how many tiles to output.
 
@@ -49,10 +49,10 @@ def select_edge_tile(grid,count:int=1,except_tile:'Tile'=None,except_edge:str=No
 	#-----DECLARE-EDGES-AND-LAMBDA-TO-CREATE-RANDOM-X,Y-VALUES-----#
 	edges = {
 		#edge name		#(generate random x value, generate random y value) when called
-		"top": lambda: (random.randint(0,x_max),random.randint(0,LOCATION_SPAWN_RANGE-1)),
-		"left": lambda: (random.randint(0,LOCATION_SPAWN_RANGE-1),random.randint(0,y_max)),
-		"bottom": lambda: (random.randint(0,x_max),random.randint(y_max-LOCATION_SPAWN_RANGE-1,y_max)),
-		"right": lambda: (random.randint(x_max-LOCATION_SPAWN_RANGE-1,x_max),random.randint(0,y_max))
+		"top": lambda: (random.randint(0,x_max),random.randint(0,edge_range-1)),
+		"left": lambda: (random.randint(0,edge_range-1),random.randint(0,y_max)),
+		"bottom": lambda: (random.randint(0,x_max),random.randint(y_max-edge_range-1,y_max)),
+		"right": lambda: (random.randint(x_max-edge_range-1,x_max),random.randint(0,y_max))
 	}
 	#----------#
 	#-----GENERATE-LIST-OF-RANDOM-TILES-----#

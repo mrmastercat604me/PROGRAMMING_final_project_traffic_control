@@ -78,15 +78,13 @@ GRID_WIDTH:int = 30
 GRID_HEIGHT:int = 30
 DIRECTIONS:list = [(0,-1),(0,1),(-1,0),(1,0)] #up, down, left, right
 
-#GAME VARIABLES
-LOCATION_SPAWN_RANGE = 3 #how many tiles from the edge (including the edge tile) can be used for a location
-
 #DIFFICULTIES
 difficulties_dict = {
 	"Easy" : {
 		"colour_count": 3,
         "colour_list": EASY_COLOURS,
 		"pairs": 1,
+        "edge_range":3,
 		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
 		"car_spawn_rate": 4#cars to spawn per MINUTE
 	},
@@ -94,6 +92,7 @@ difficulties_dict = {
 		"colour_count": 5,
         "colour_list": NORMAL_COLOURS,
 		"pairs": 2,
+        "edge_range":3,
 		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
 		"car_spawn_rate": 12 #cars to spawn per MINUTE
 	},
@@ -101,6 +100,7 @@ difficulties_dict = {
 		"colour_count":10,
         "colour_list": HARD_COLOURS,
 		"pairs":4,
+        "edge_range":5,
 		"obstacles": (GRID_HEIGHT*GRID_WIDTH) // 10,
 		"car_spawn_rate": 20
 	}

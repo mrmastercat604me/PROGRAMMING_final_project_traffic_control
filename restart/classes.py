@@ -141,3 +141,15 @@ class DestinationPair:
 	def update_visual(self):
 		for tile in self.pair:
 			tile.colour = self.colour
+
+class DebugFile:
+	def __init__(self,file):
+		self.file = file
+	
+	def write(self, text:str):
+		with open(self.file,"a+") as f:
+			f.seek(-1)
+			f.write(text)
+			f.truncate()
+		return
+

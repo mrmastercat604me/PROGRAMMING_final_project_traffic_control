@@ -6,6 +6,7 @@ from options_menu import options_menu
 from game import game
 
 pygame.init()
+log = DebugFile("log.txt")
 
 def main_menu():
 	#create the main screen
@@ -56,23 +57,24 @@ def main_menu():
 		mouse_x,mouse_y = pygame.mouse.get_pos()
 		if title_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
-				print("Secret")
+				log.write("Secret Button Left Clicked")
 			if RightClick:
-				print("Secret Right Click")
+				log.write("Secret Button Right Clicked")
 		if start_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
-				print("Play Game")
+				log.write("Play Game Button Left Clicked")
 				score = game(screen,surface,settings)
 				#call function from other files and run #just like in blastroids project
 			if RightClick:
-				print("Play Right Click")
+				log.write("Play Button Right Clicked")
 		if options_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
-				print("Options Menu")
+				log.write("Options Menu Button Left Clicked")
 				#PROBLEM HERE WITH HOW SETTINGS IS OUTPUT AND HOW THIS INTERPRETS THE DIFFICULTY FROM THAT
 				scroll, (difficulty, settings) = options_menu(screen,surface,BackgroundImage,scroll,difficulty)
+				log.write(f"Variables after closing Options:\nDifficulty_str: {difficulty}, Settings: {settings}")
 			if RightClick:
-				print("Options Right Click")
+				log.write("Options Button Right Clicked")
 		if exit_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
 				running = False
