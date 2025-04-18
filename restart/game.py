@@ -29,6 +29,8 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	#GENERATE PAIRS
 	# maybe implement a mandatory radius that the tiles have to be at or exceed?
 	# BE CAREFUL WITH THIS ^^^ MODIFY THE POPULATING SO IT CAN IMPLEMENT THIS AS A POSSIBILITY.
+	#
+	#TO WORK ON NEXT TIME: REWRITE THE POPULATE FUNCTION TO PROPERLY OUTPUT THE RESULT I WANT
 	populate_destinations(grid,settings)
 	
 	LeftClick = False
