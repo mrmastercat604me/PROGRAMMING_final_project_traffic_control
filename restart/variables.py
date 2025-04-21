@@ -22,28 +22,28 @@ DIRECTIONS:list = [(0,-1),(0,1),(-1,0),(1,0)] #up, down, left, right
 
 #COLOURS
 EASY_COLOURS = {
-    "red": (255,0,0),
-    "orange": (255,181,0),
-    "yellow": (255,255,0),
-    "green": (0,255,0),
-    "aqua": (0,255,252),
-    "blue":(0,0,255),
-    "blueviolet": (147,0,255),
-    "fuchsia": (228,0,255)
+	"red": (255,0,0),
+	"orange": (255,181,0),
+	"yellow": (255,255,0),
+	"green": (0,255,0),
+	"aqua": (0,255,252),
+	"blue":(0,0,255),
+	"blueviolet": (147,0,255),
+	"fuchsia": (228,0,255)
 }
 NORMAL_COLOURS = {
-    "red":(255,0,0),
-    "orangered": (201,0,0),
-    "orange": (255,181,0),
-    "darkorange": (255,130,0),
-    "yellow": (255,255,0),
-    "greenyellow": (185,255,0),
-    "green": (0,255,0),
-    "lime": (45,255,0),
-    "blue": (0,0,255),
-    "skyblue": (0,218,255),
-    "darkviolet": (175,0,255),
-    "fuchsia": (228,0,255)
+	"red":(255,0,0),
+	"orangered": (201,0,0),
+	"orange": (255,181,0),
+	"darkorange": (255,130,0),
+	"yellow": (255,255,0),
+	"greenyellow": (185,255,0),
+	"green": (0,255,0),
+	"lime": (45,255,0),
+	"blue": (0,0,255),
+	"skyblue": (0,218,255),
+	"darkviolet": (175,0,255),
+	"fuchsia": (228,0,255)
 }
 HARD_COLOURS = {
 	"aqua": (0,255,252),
@@ -87,27 +87,18 @@ HARD_COLOURS = {
 difficulties_dict = {
 	"Easy" : {
 		"colour_count": 3,
-        "colour_list": EASY_COLOURS,
+		"colour_list": EASY_COLOURS,
 		"pairs": 1,
-        "edge_range":3,
-		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
-		"car_spawn_rate": 4#cars to spawn per MINUTE
 	},
 	"Normal" : {
 		"colour_count": 5,
-        "colour_list": NORMAL_COLOURS,
+		"colour_list": NORMAL_COLOURS,
 		"pairs": 2,
-        "edge_range":3,
-		"obstacles": (GRID_HEIGHT*GRID_WIDTH)//20,
-		"car_spawn_rate": 12 #cars to spawn per MINUTE
 	},
 	"Hard" : {
 		"colour_count":10,
-        "colour_list": HARD_COLOURS,
+		"colour_list": HARD_COLOURS,
 		"pairs":4,
-        "edge_range":5,
-		"obstacles": (GRID_HEIGHT*GRID_WIDTH) // 10,
-		"car_spawn_rate": 20
 	}
 }
 difficulties_list = list(difficulties_dict.keys())
