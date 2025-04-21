@@ -94,12 +94,11 @@ def populate_destinations(grid,settings):
 	tiles_in_pairs = []
 	for colour in colours_list:
 		for pair in range(pairs):
-			# location1, location1_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs)
-			# tiles_in_pairs.append(location1)
-			# location2, location2_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs,except_edge=location1_edge)
-			# tiles_in_pairs.append(location2)
-			# pair1 = DestinationPair(grid,location1,location2,colour)
-			pass
+			location1, location1_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs)
+			tiles_in_pairs.append(location1)
+			location2, location2_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs,except_edge=location1_edge)
+			tiles_in_pairs.append(location2)
+			pair1 = DestinationPair(grid,location1,location2,colour)
 
 def populate(grid):
 	#generate tiles in grid size 
@@ -111,10 +110,7 @@ def populate(grid):
 	colours = random.sample((list(EASY_COLOURS.values())),k=pairs) #generate a list of three random separate colours.
 	generating = True
 	while generating:
-		tiles = grid.list_of_tiles(pairs*2)#generate a sample list of pairs*2 tiles so we have pairs*2 unique tiles
 		for colour in colours:
 			for pair in range(pairs):
-				tile0 = tiles[0]
-				tile1 = tiles[1]
-				pair = DestinationPair(grid,tile0,tile1,colour)
+				pass
 		return
