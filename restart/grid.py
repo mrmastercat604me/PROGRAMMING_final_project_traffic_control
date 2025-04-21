@@ -106,4 +106,15 @@ def populate(grid):
 	#check if tile placement will ensure a valid solution
 	#if not, regenerate tile placement and loop
 	#if valid solution, break and update grid.
-	pass
+
+	pairs = 3 #example number of pairs
+	colours = random.sample((list(EASY_COLOURS.values())),k=pairs) #generate a list of three random separate colours.
+	generating = True
+	while generating:
+		tiles = grid.list_of_tiles(pairs*2)#generate a sample list of pairs*2 tiles so we have pairs*2 unique tiles
+		for colour in colours:
+			for pair in range(pairs):
+				tile0 = tiles[0]
+				tile1 = tiles[1]
+				pair = DestinationPair(grid,tile0,tile1,colour)
+		return

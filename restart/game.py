@@ -31,7 +31,7 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	# BE CAREFUL WITH THIS ^^^ MODIFY THE POPULATING SO IT CAN IMPLEMENT THIS AS A POSSIBILITY.
 	#
 	#TO WORK ON NEXT TIME: REWRITE THE POPULATE FUNCTION TO PROPERLY OUTPUT THE RESULT I WANT
-	populate_destinations(grid,settings)
+	populate(grid)
 	
 	LeftClick = False
 	RightClick = False

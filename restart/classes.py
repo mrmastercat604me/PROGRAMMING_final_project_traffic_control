@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from functions import *
 
 class Button():
@@ -90,6 +90,11 @@ class Grid:
 				row.append(col)
 			self.grid.append(row)
 	
+	def list_of_tiles(self,count:int)->list:
+		all_tiles = [tile for row in self.grid for tile in row]
+		tiles = list(random.sample(all_tiles,k=count))
+		return list(tiles)
+
 	def get_tile_with_index(self, x:int, y:int) -> 'Tile':
 		if (0 <= x and x < self.width) and (0 <= y and y < self.height):
 			return self.grid[y][x]
