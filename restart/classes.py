@@ -106,7 +106,7 @@ class Grid:
 		grid_y = ((y-self.y) // TILE_SIZE_HEIGHT) -1
 		return self.get_tile_with_index(x=grid_x, y=grid_y)
 	
-	def get_neighbours(self,tile:'Tile',valid_path_only:bool=True) -> list:
+	def get_neighbours(self,tile:'Tile',only_type='path') -> list:
 		neighbours = []
 		if self.get_tile_with_index(tile.x, tile.y):
 			for direction in DIRECTIONS:
@@ -115,8 +115,13 @@ class Grid:
 				x_shift, y_shift = direction
 				x += x_shift
 				y += y_shift
-				if self.get_tile_with_index(x,y) and ((valid_path_only and self.grid[y][x].type == "path") or not valid_path_only):
-					neighbours.append(self.grid[y][x])
+				if self.get_tile_with_index(x,y):
+					if isinstance(only_type,str):
+						if self.get_tile_with_index(x,y).type == only_type:
+							neighbours.append(self.grid[y][x])
+					elif isinstance(only_type,list):
+						if self.get_tile_with_index(x,y).type in only_type:
+							neighbours.append(self.grid[y][x])
 			return neighbours
 		else:
 			return None

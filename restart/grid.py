@@ -100,17 +100,50 @@ def populate_destinations(grid,settings):
 			tiles_in_pairs.append(location2)
 			pair1 = DestinationPair(grid,location1,location2,colour)
 
-def populate(grid):
-	#generate tiles in grid size 
-	#check if tile placement will ensure a valid solution
-	#if not, regenerate tile placement and loop
-	#if valid solution, break and update grid.
+def is_surrounded_by_walls(grid,tile):
+	'''
+	Checks if all surrounding tiles are obstacles (o.e., walls).
+	'''
+	surrounding = grid.get_neighbours(tile, only_type=['obstacle','endpoint','path'])
 
-	pairs = 3 #example number of pairs
-	colours = random.sample((list(EASY_COLOURS.values())),k=pairs) #generate a list of three random separate colours.
-	generating = True
-	while generating:
-		for colour in colours:
-			for pair in range(pairs):
-				pass
-		return
+	return all(neighbour.type == 'obstacle' for neighbour in surrounding)
+def get_valid_neighbours(grid,tile):
+	"""
+	Returns a list of valid neighbour coordinates that can be used to carve the maze.
+	A valid neighbour is an 'obstacle' tile that is surrounded by walls.
+	"""
+	valid_neighbours = []
+
+	# Use your method to get all neighbours of type 'obstacle'
+	obstacle_neighbours = grid.get_neighbours(tile, only_type='obstacle')
+
+	for neighbour in obstacle_neighbours:
+		if is_surrounded_by_walls(grid, neighbour):
+			valid_neighbours.append((neighbour.x, neighbour.y))
+
+	return valid_neighbours
+
+def generate_labyrinth(grid,start_x,start_y):
+	#start with a grid of walls
+	for row in grid.grid:
+		for tile in row:
+			tile.type = 'obstacle'
+	
+	#Random Depth-First-Search
+	stack = [(start_x,start_y)]
+	grid.get_tile_with_index(start_x,start_y).type = 'path' #set the start tile as a path
+	while stack:
+		x, y = stack[-1]
+		current_tile = grid.get_tile_with_index(x,y)
+		neighbours = get_valid_neighbours(grid,current_tile)
+		
+		if neighbours:
+			#randomly choose a neighbour to move to
+			next_tile = random.choice(neighbours)
+			#make a path to neighbour
+			next_tile.type = 'path'
+			#push the current tile to the stack and move to the next tile
+			stack.append((next_tile.x,next_tile.y))
+		else:
+			#backtrack if there are no valid neighbours
+			stack.pop()
