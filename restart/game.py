@@ -20,10 +20,10 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	return settings list to be able to be modified and kept while the window stays active.
 	'''
 	#Calculate grid placement
-	GRID_X = percent_of(50,(SCREEN_WIDTH-(GRID_WIDTH*TILE_SIZE)))
-	GRID_Y = percent_of(50,(SCREEN_HEIGHT-(GRID_WIDTH*TILE_SIZE)))
+	GRID_X = percent_of(50,(SCREEN_WIDTH-(GRID_WIDTH)))
+	GRID_Y = percent_of(50,(SCREEN_HEIGHT-(GRID_HEIGHT)))
 	#create any and all objects
-	grid_surface = pygame.Surface((TILE_SIZE*GRID_WIDTH,TILE_SIZE*GRID_HEIGHT))
+	grid_surface = pygame.Surface((GRID_WIDTH,GRID_HEIGHT))
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
 
 	#GENERATE PAIRS

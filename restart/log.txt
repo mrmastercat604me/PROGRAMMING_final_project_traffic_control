@@ -1,12 +1,5 @@
+Play Game Button Left Clicked
 Options Menu Button Left Clicked
 Variables after closing Options:
     Difficulty_str: Easy,
-    Settings: {'colour_count': 3, 'colour_list': {'red': (255, 0, 0), 'orange': (255, 181, 0), 'yellow': (255, 255, 0), 'green': (0, 255, 0), 'aqua': (0, 255, 252), 'blue': (0, 0, 255), 'blueviolet': (147, 0, 255), 'fuchsia': (228, 0, 255)}, 'pairs': 1, 'edge_range': 3, 'obstacles': 45, 'car_spawn_rate': 4}
-Options Button Right Clicked
-Options Button Right Clicked
-Play Game Button Left Clicked
-Options Menu Button Left Clicked
-Variables after closing Options:
-    Difficulty_str: Hard,
-    Settings: {'colour_count': 10, 'colour_list': {'aqua': (0, 255, 252), 'aquamarine': (0, 255, 210), 'blue': (0, 0, 255), 'blueviolet': (147, 0, 255), 'chartreuse': (122, 255, 0), 'cornflowerblue': (0, 167, 255), 'crimson': (255, 0, 79), 'darkblue': (0, 0, 152), 'darkorange': (255, 130, 0), 'darkred': (150, 0, 0), 'darkturquoise': (0, 227, 255), 'darkviolet': (175, 0, 255), 'deeppink': (255, 0, 153), 'deepskyblue': (0, 211, 255), 'dodgerblue': (0, 143, 255), 'firebrick': (183, 0, 0), 'fuchsia': (228, 0, 255), 'gold': (255, 212, 0), 'green': (0, 255, 0), 'greenyellow': (185, 255, 0), 'lime': (45, 255, 0), 'maroon': (98, 0, 0), 'mediumblue': (0, 64, 255), 'mediumslateblue': (0, 93, 255), 'mediumspringgreen': (0, 255, 169), 'midnightblue': (0, 0, 75), 'navy': (0, 0, 118), 'orange': (255, 181, 0), 'orangered': (201, 0, 0), 'red': (255, 0, 0), 'royalblue': (0, 116, 255), 'skyblue': (0, 218, 255), 'springgreen': (0, 255, 114), 'turquoise': (0, 255, 226), 'yellow': (255, 255, 0)}, 'pairs': 4, 'edge_range': 5, 'obstacles': 90, 'car_spawn_rate': 20}
-Play Game Button Left Clicked
+    Settings: {'colour_count': 3, 'colour_list': {'red': (255, 0, 0), 'orange': (255, 181, 0), 'yellow': (255, 255, 0), 'green': (0, 255, 0), 'aqua': (0, 255, 252), 'blue': (0, 0, 255), 'blueviolet': (147, 0, 255), 'fuchsia': (228, 0, 255)}, 'pairs': 1, 'edge_range': 3, 'obstacles': 18000, 'car_spawn_rate': 4}

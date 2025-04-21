@@ -10,6 +10,16 @@ font = pygame.font.SysFont(None,75)
 mainClock = pygame.time.Clock()
 FPS = 60
 
+#GRID VARIABLES
+GRID_WIDTH:int = 600 #pixels
+GRID_HEIGHT:int = 600 #pixels
+GRID_COLS:int = 10
+GRID_ROWS:int = 10
+TILE_SIZE_WIDTH:int = GRID_WIDTH // GRID_COLS
+TILE_SIZE_HEIGHT:int = GRID_HEIGHT // GRID_ROWS
+
+DIRECTIONS:list = [(0,-1),(0,1),(-1,0),(1,0)] #up, down, left, right
+
 #COLOURS
 EASY_COLOURS = {
     "red": (255,0,0),
@@ -72,11 +82,6 @@ HARD_COLOURS = {
 	"turquoise": (0,255,226),
 	"yellow": (255,255,0)
 }
-#GRID VARIABLES
-TILE_SIZE:int = 20
-GRID_WIDTH:int = 30
-GRID_HEIGHT:int = 30
-DIRECTIONS:list = [(0,-1),(0,1),(-1,0),(1,0)] #up, down, left, right
 
 #DIFFICULTIES
 difficulties_dict = {

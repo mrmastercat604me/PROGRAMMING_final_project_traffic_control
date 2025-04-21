@@ -97,8 +97,8 @@ class Grid:
 			return None
 	
 	def get_tile_with_pos(self,x:int,y:int) -> 'Tile':
-		grid_x = ((x-self.x) // TILE_SIZE) -1
-		grid_y = ((y-self.y) // TILE_SIZE) -1
+		grid_x = ((x-self.x) // TILE_SIZE_WIDTH) -1
+		grid_y = ((y-self.y) // TILE_SIZE_HEIGHT) -1
 		return self.get_tile_with_index(x=grid_x, y=grid_y)
 	
 	def get_neighbours(self,tile:'Tile',valid_path_only:bool=True) -> list:
