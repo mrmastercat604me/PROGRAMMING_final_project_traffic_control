@@ -47,6 +47,9 @@ class Tile:
 	def __eq__(self,node:'Tile') -> bool:
 		return (self.x == node.x) and (self.y == node.y)
 	
+	def __hash__(self):
+		return hash((self.x,self.y))
+	
 	def __repr__(self):
 		return f"({self.x}, {self.y})"
 	
@@ -86,7 +89,7 @@ class Grid:
 		for y in range(height):
 			row = []
 			for x in range(width):
-				col = Tile(x+self.x, y+self.y,type='#fill this later')
+				col = Tile(x+self.x, y+self.y,type='obstacle')
 				row.append(col)
 			self.grid.append(row)
 	
@@ -108,23 +111,19 @@ class Grid:
 	
 	def get_neighbours(self,tile:'Tile',only_type='path') -> list:
 		neighbours = []
-		if self.get_tile_with_index(tile.x, tile.y):
-			for direction in DIRECTIONS:
-				x = tile.x
-				y = tile.y
-				x_shift, y_shift = direction
-				x += x_shift
-				y += y_shift
-				if self.get_tile_with_index(x,y):
-					if isinstance(only_type,str):
-						if self.get_tile_with_index(x,y).type == only_type:
-							neighbours.append(self.grid[y][x])
-					elif isinstance(only_type,list):
-						if self.get_tile_with_index(x,y).type in only_type:
-							neighbours.append(self.grid[y][x])
-			return neighbours
-		else:
-			return None
+		for direction in DIRECTIONS:
+			x_shift, y_shift = direction
+			x = tile.x + x_shift
+			y = tile.y + y_shift
+			neighbour = self.get_tile_with_index(x,y)
+			if neighbour:
+				if isinstance(only_type,str):
+					if neighbour.type == only_type:
+						neighbours.append(neighbour)
+				elif isinstance(only_type,list):
+					if neighbour.type in only_type:
+						neighbours.append(neighbour)
+		return neighbours
 	
 	def generate_neighbour_values(self,tile:'Tile',home_tile:'Tile',goal_tile:'Tile'):
 		for neighbour in self.get_neighbours(tile):

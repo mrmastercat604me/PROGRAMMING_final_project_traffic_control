@@ -24,14 +24,14 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	GRID_Y = percent_of(50,(SCREEN_HEIGHT-(GRID_HEIGHT)))
 	#create any and all objects
 	grid_surface = pygame.Surface((GRID_WIDTH,GRID_HEIGHT))
-	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
+	grid = Grid(GRID_COLS,GRID_ROWS)
 
 	#GENERATE PAIRS
 	# maybe implement a mandatory radius that the tiles have to be at or exceed?
 	# BE CAREFUL WITH THIS ^^^ MODIFY THE POPULATING SO IT CAN IMPLEMENT THIS AS A POSSIBILITY.
 	#
 	#TO WORK ON NEXT TIME: REWRITE THE POPULATE FUNCTION TO PROPERLY OUTPUT THE RESULT I WANT
-	populate(grid)
+	generate_labyrinth_prims(grid,0,0)
 	
 	LeftClick = False
 	RightClick = False
