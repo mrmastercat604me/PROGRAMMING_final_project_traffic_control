@@ -44,8 +44,12 @@ class Tile:
 	def __lt__(self,node:'Tile') -> bool:
 		return self.f < node.f
 
-	def __eq__(self,node:'Tile') -> bool:
-		return (self.x == node.x) and (self.y == node.y)
+	def __eq__(self,node) -> bool:
+		if isinstance(node, Tile):
+			return (self.x == node.x) and (self.y == node.y)
+		if isinstance(node, tuple):
+			node_x, node_y = node
+			return (self.x == node_x) and (self.y == node_y)
 	
 	def __hash__(self):
 		return hash((self.x,self.y))

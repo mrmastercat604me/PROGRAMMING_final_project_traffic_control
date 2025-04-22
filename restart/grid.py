@@ -178,7 +178,7 @@ def add_branching(grid,chance=0.05):
 					# make the current obstacle tile a path tile.
 					tile.type = 'path'
 
-def generate_labyrinth_prims(grid,start_x,start_y):
+def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 	#start with a grid of walls
 	for row in grid.grid:
 		for tile in row:
@@ -226,16 +226,16 @@ def generate_labyrinth_prims(grid,start_x,start_y):
 def is_connected(grid):
 	'''Basic Breadth First Search to check if all path tiles are connected.'''
 	visited = set()
-	all_path_coords = set()
+	all_path_tiles = set()
 	for row in grid.grid:
 		for tile in row:
 			if tile.type == 'path':
-				all_path_coords.add((tile.x, tile.y))
-	if not all_path_coords:
+				all_path_tiles.add(tile)
+	if not all_path_tiles:
 		return False
 	
 	#Use the set as a queue
-	start = next(iter(all_path_coords))
+	start = next(iter(all_path_tiles))
 	queue = [(start.x, start.y)]
 	visited.add(start)
 
@@ -250,7 +250,7 @@ def is_connected(grid):
 				visited.add(coord)
 				queue.append(coord)
 
-	return visited == all_path_coords
+	return visited == all_path_tiles
 
 def find_isolated_regions(grid):
 	'''Find all isolated regions of path tiles using a BFS.'''
@@ -280,7 +280,80 @@ def find_isolated_regions(grid):
 	return regions
 
 def find_closest_region(region1,region2):
-	pass
+	'''Find the closest straight path between two regions'''
+	min_distacne = float('inf')
+	closest_pair = None
+
+	for (x1, y1) in region1:
+		for (x2, y2) in region2:
+			distance = manhattan_distance((x1,y1),(x2,y2))
+			if distance < min_distance:
+				min_distance = distance
+				closest_pair = ((x1,y1),(x2,y2))
+	return closest_pair
+
+def create_path(grid, start, end):
+	'''Create a straight path between two tiles.'''
+	x1, y1 = start
+	x2, y2 = end
+	path_tiles = []
+
+	#Horizontal path
+	if x1 == x2:
+		for y in range(min(y1,y2), max(y1,y2)+1):
+			tile = grid.get_tile_with_index(x1,y)
+			tile.type = 'path'
+			path_tiles.append((x1,y))
+	
+	#vertical path
+	elif y1 == y2:
+		for x in range(min(x1,x2), max(x1,x2)+1):
+			tile = grid.get_tile_with_index(x,y1)
+			tile.type = 'path'
+			path_tiles.append((x,y1))
+	
+	#horizontal path
+
+	#return
+	return path_tiles
+
+def connect_isolated_regions(grid):
+	'''Connect isolated regions of path tiles to ensure a fully connected grid.'''
+	regions = find_isolated_regions(grid)
+
+	while len(regions) > 1:
+		#find the closest pair of regions
+		closest_pair = None
+		min_distance = float('inf')
+		region1, region2 = None, None
+
+		#for loop iterate through regions, index and regions
+		for i, r1 in enumerate(regions):
+			for j, r2 in enumerate(regions):
+				if i>= j:
+					#if we are at the same region or we have already compared the two regions together
+					continue
+				pair = find_closest_region(r1,r2)
+				if pair:
+					pos1, pos2 = pair
+					distance = manhattan_distance(pos1,pos2)
+					if distance < min_distance:
+						min_distance = distance
+						closest_pair = pair
+						region1, region2 = r1, r2
+		#now that we have found the closest isolated regions
+		#create a path between these two regions
+		if closest_pair:
+			start, end = closest_pair
+			create_path(grid, start, end)
+
+			#make the two regions into one region to reduce the count of regions
+			new_region = region1.union(region2)
+			regions.remove(region1)
+			regions.remove(region2)
+			regions.append(new_region)
+	#return
+	return grid
 
 def control_density(grid,target_density=0.5,preserve_tiles=None):
 	if preserve_tiles is None:
@@ -324,4 +397,17 @@ def control_density(grid,target_density=0.5,preserve_tiles=None):
 		pass
 
 def populate(grid):
-	pass
+	print("Generating Labyrinth...")
+	generate_labyrinth_prims(grid)
+	print("Labyrinth Generated.")
+	print()
+	print("Connecting Isolated Regions...")
+	grid = connect_isolated_regions(grid)
+	print("Isolated Regions Connected.")
+	print()
+	print("Controlling density...")
+	control_density(grid)
+	print("Density Controlled")
+
+	#return
+	return grid
