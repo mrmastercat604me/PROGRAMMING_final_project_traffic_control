@@ -179,6 +179,7 @@ def add_branching(grid,chance=0.05):
 					tile.type = 'path'
 
 def generate_labyrinth_prims(grid,start_x=0,start_y=0):
+	'''Generate a Labyrinth using Prim's Method'''
 	#start with a grid of walls
 	for row in grid.grid:
 		for tile in row:
@@ -199,7 +200,6 @@ def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 	itr = 0
 	while walls_set:
 		# print(f"Iteration {itr}, Walls left: {len(walls_set)}")
-
 		if itr > 2000: #prevent infinite loop (for testing)
 			print("Maximum iterations reached")
 			break
@@ -221,7 +221,6 @@ def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 		walls_set.remove(wall)
 		itr += 1
 	# print(f"Total iterations: {itr}")
-	add_branching(grid)
 
 def is_connected(grid):
 	'''Basic Breadth First Search to check if all path tiles are connected.'''
@@ -398,15 +397,27 @@ def control_density(grid,target_density=0.5,preserve_tiles=None):
 
 def populate(grid):
 	print("Generating Labyrinth...")
+
 	generate_labyrinth_prims(grid)
+
 	print("Labyrinth Generated.")
 	print()
+	print("Adding Branching...")
+
+	add_branching(grid)
+
+	print("Branching Added.")
+	print()
 	print("Connecting Isolated Regions...")
+
 	grid = connect_isolated_regions(grid)
+
 	print("Isolated Regions Connected.")
 	print()
 	print("Controlling density...")
+
 	control_density(grid)
+	
 	print("Density Controlled")
 
 	#return
