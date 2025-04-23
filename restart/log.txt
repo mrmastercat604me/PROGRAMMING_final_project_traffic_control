@@ -1,5 +1,1 @@
 Play Game Button Left Clicked
-Options Menu Button Left Clicked
-Variables after closing Options:
-    Difficulty_str: Easy,
-    Settings: {'colour_count': 3, 'colour_list': {'red': (255, 0, 0), 'orange': (255, 181, 0), 'yellow': (255, 255, 0), 'green': (0, 255, 0), 'aqua': (0, 255, 252), 'blue': (0, 0, 255), 'blueviolet': (147, 0, 255), 'fuchsia': (228, 0, 255)}, 'pairs': 1}

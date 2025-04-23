@@ -164,7 +164,13 @@ def select_edge_tile(grid,count:int=1,edge_range:int=3,except_tile:'Tile'=None,e
 # 			#backtrack if there are no valid neighbours
 # 			stack.pop()
 
-def add_branching(grid,chance=0.05):
+def iterate_grid(grid,condition=None):
+	for row in grid.grid:
+		for tile in row:
+			if (condition is None) or condition(tile):
+				yield tile
+
+def add_branching(grid,chance=0.1):
 	#iterate through the grid
 	for row in grid.grid:
 		for tile in row:
@@ -225,18 +231,14 @@ def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 def is_connected(grid):
 	'''Basic Breadth First Search to check if all path tiles are connected.'''
 	visited = set()
-	all_path_tiles = set()
-	for row in grid.grid:
-		for tile in row:
-			if tile.type == 'path':
-				all_path_tiles.add(tile)
+	all_path_tiles = set(iterate_grid(grid, lambda t: t.type == 'path'))
 	if not all_path_tiles:
 		return False
 	
 	#Use the set as a queue
 	start = next(iter(all_path_tiles))
 	queue = [(start.x, start.y)]
-	visited.add(start)
+	visited.add((start.x, start.y))
 
 	while queue:
 		x, y = queue.pop(0)
@@ -251,6 +253,23 @@ def is_connected(grid):
 
 	return visited == all_path_tiles
 
+def bfs_region(grid,start_tile):
+	visited = set()
+	queue = [(start_tile.x, start_tile.y)]
+	region = set()
+	visited.add((start_tile.x, start_tile.y))
+
+	while queue:
+		x, y = queue.pop(0)
+		region.add((x,y))
+		tile = grid.get_tile_with_index(x,y)
+		for neighbour in grid.get_neighbours(tile,only_type='path'):
+			coord = (neighbour.x, neighbour.y)
+			if coord not in visited:
+				visited.add(coord)
+				queue.append(coord)
+	return region
+
 def find_isolated_regions(grid):
 	'''Find all isolated regions of path tiles using a BFS.'''
 	if is_connected(grid):
@@ -259,28 +278,17 @@ def find_isolated_regions(grid):
 	visited = set()
 	regions = []
 
-	for row in grid.grid:
-		for tile in row:
-			if tile.type == 'path' and (tile.x, tile.y) not in visited:
-				#BFS to discover the full region
-				region = set()
-				queue = [(tile.x,tile.y)]
-				visited.add((tile.x,tile.y))
-				while queue:
-					x,y = queue.pop(0)
-					region.add((x,y))
-					current_tile = grid.get_tile_with_index(x,y)
-					for neighbour in grid.get_neighbours(current_tile,only_type='path'):
-						coord = (neighbour.x, neighbour.y)
-						if coord not in visited:
-							visited.add(coord)
-							queue.append(coord)
-				regions.append(region)
+	for tile in iterate_grid(grid, lambda t: t.type =='path'):
+		coord = (tile.x, tile.y)
+		if coord not in visited:
+			region = bfs_region(grid,tile)
+			regions.append(region)
+			visited.update(region)
 	return regions
 
 def find_closest_region(region1,region2):
 	'''Find the closest straight path between two regions'''
-	min_distacne = float('inf')
+	min_distance = float('inf')
 	closest_pair = None
 
 	for (x1, y1) in region1:
@@ -312,15 +320,17 @@ def create_path(grid, start, end):
 			path_tiles.append((x,y1))
 	
 	#horizontal path
-
+	
 	#return
 	return path_tiles
 
-def connect_isolated_regions(grid):
+def connect_isolated_regions(grid,max_region_size=8):
 	'''Connect isolated regions of path tiles to ensure a fully connected grid.'''
 	regions = find_isolated_regions(grid)
 
-	while len(regions) > 1:
+	made_progress = True
+	while (len(regions) > 1) and (made_progress):
+		made_progress = False
 		#find the closest pair of regions
 		closest_pair = None
 		min_distance = float('inf')
@@ -331,6 +341,10 @@ def connect_isolated_regions(grid):
 			for j, r2 in enumerate(regions):
 				if i>= j:
 					#if we are at the same region or we have already compared the two regions together
+					continue
+				combined_size = len(r1) + len(r2)
+				if combined_size > max_region_size:
+					#skip if combining exceeds the max size
 					continue
 				pair = find_closest_region(r1,r2)
 				if pair:
@@ -351,18 +365,18 @@ def connect_isolated_regions(grid):
 			regions.remove(region1)
 			regions.remove(region2)
 			regions.append(new_region)
+			made_progress = True
+		else:
+			break
 	#return
 	return grid
 
-def control_density(grid,target_density=0.5,preserve_tiles=None):
+def control_density(grid,target_density=0.7,preserve_tiles=None):
+	'''Control density of path_tiles'''
 	if preserve_tiles is None:
 		preserve_tiles = set()
 	#count the total path tiles
-	path_tiles:list = []
-	for row in grid.grid:
-		for tile in row:
-			if tile.type == 'path':
-				path_tiles.append(tile)
+	path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
 	#total tiles
 	total_tiles:int = grid.width * grid.height
 	#calculate current density
@@ -371,11 +385,7 @@ def control_density(grid,target_density=0.5,preserve_tiles=None):
 	#adjust current_density to meet target_density
 	if current_density < target_density:
 		#get the obstacle tiles
-		obstacle_tiles:list = []
-		for row in grid.grid:
-			for tile in row:
-				if tile.type == 'obstacle':
-					obstacle_tiles.append(tile)
+		obstacle_tiles:list = list(iterate_grid(grid,lambda t: t.type == 'obstacle'))
 		#shuffle the list
 		random.shuffle(obstacle_tiles)
 
@@ -391,9 +401,31 @@ def control_density(grid,target_density=0.5,preserve_tiles=None):
 					break
 			else:
 				tile.type = 'obstacle'
-	elif current_density > target_density:
+	elif current_density >= target_density:
 		#add more obstacles (NOT TYPICALLY USED)
-		pass
+		return
+
+def connect_corners_to_center(grid):
+	width, height = grid.width, grid.height
+	corners = [(0,0), (width-1,0), (0,height-1), (width-1, height-1)]
+	center = (width // 2, height // 2)
+
+	for corner in corners:
+		create_path(grid, corner, center)
+
+def random_cross_connect(grid, count=3, min_distance=5):
+	path_coords = [(t.x, t.y) for t in iterate_grid(grid, lambda t: t.type == 'path')]
+	random.shuffle(path_coords)
+
+	connections = 0
+	for i, start in enumerate(path_coords):
+		for end in path_coords[i+1:]:
+			if manhattan_distance(start, end) >= min_distance:
+				create_path(grid, start, end)
+				connections += 1
+				break
+		if connections >= count:
+			break
 
 def populate(grid):
 	print("Generating Labyrinth...")
@@ -419,6 +451,17 @@ def populate(grid):
 	control_density(grid)
 	
 	print("Density Controlled")
+	print()
+	print("Connecting corners to center...")
 
+	connect_corners_to_center(grid)
+
+	print("Corners connected.")
+	print()
+	print("Adding long-range cross connections...")
+
+	random_cross_connect(grid, count=4)
+
+	print("Long-range cross sections connected.")
 	#return
 	return grid
