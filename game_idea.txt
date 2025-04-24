@@ -34,27 +34,39 @@ As the player progresses, the puzzle could shift or have new rules added—for e
 you can make paths block certain tiles temporarily.
 
 
-# REVISI THIS IDEA LATER WITH BETTER QUESTION
-HOW CAN I MAKE A MAX NUMBER OF PATH TILES IN A REGION? SO THAT THERE IS FOR SURE MULTIPLE WAYS TO GET FROM TWO CONNECTED REGIONS TO TWO CONNECTED REGIONS?
+# MAZE GENERATION
+CORRIDORS
+LOTS OF INTERCONNECTIVTY 
+VARIABLE WIDTHS OF CORRIDORS
+SMALL POCKETS OF ROUNDABOUTS
+
+==============================
+- BASE MAZE USING RANDOM DFS
+- RANDOM INSERTS OF ROUNDABOUTS
+- WIDEN SOME CORRIDORS
+- ADD EXRA INTERCONNECTIVITY
 
 
 
-def create_path(grid, start, end):
-    x1, y1 = start
-    x2, y2 = end
-    path_tiles = []
+'''
+function generate_maze(width, height):
+    // Width and height are logical maze cells, not full grid
+    grid_width = width * 2 + 1
+    grid_height = height * 2 + 1
+    maze = 2D array of size (grid_height x grid_width), filled with WALL (O)
 
-    ...
+    function carve(x, y):
+        maze[y][x] = PATH (P)
+        directions = shuffle([(0, -2), (2, 0), (0, 2), (-2, 0)])  // NESW
 
-    # Go horizontal first, then vertical
-    for x in range(min(x1, x2), max(x1, x2) + 1):
-        tile = grid.get_tile_with_index(x, y1)
-        tile.type = 'path'
-        path_tiles.append((x, y1))
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if in_bounds(nx, ny) and maze[ny][nx] == WALL:
+                // Carve passage through wall between
+                maze[y + dy // 2][x + dx // 2] = PATH
+                carve(nx, ny)
 
-    for y in range(min(y1, y2), max(y1, y2) + 1):
-        tile = grid.get_tile_with_index(x2, y)
-        tile.type = 'path'
-        path_tiles.append((x2, y))
-    
-    return path_tiles
+    // Start at (1,1)
+    carve(1, 1)
+    return maze
+'''

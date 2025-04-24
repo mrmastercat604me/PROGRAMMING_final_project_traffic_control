@@ -170,26 +170,27 @@ def iterate_grid(grid,condition=None):
 			if (condition is None) or condition(tile):
 				yield tile
 
-def add_branching(grid,chance=0.1):
+def add_branching(grid,chance=0.05):
 	#iterate through the grid
-	for row in grid.grid:
-		for tile in row:
-			if tile.type != 'obstacle':
-				continue
-			elif tile.type == 'obstacle':
-				#get the obstacle's neighbours
-				path_neighbours = grid.get_neighbours(tile,only_type='path')
-				#if there is 2 or more neighbours, and a random chance that random.random() is < 0.05
-				if len(path_neighbours) >= 2 and random.random() < chance:
-					# make the current obstacle tile a path tile.
-					tile.type = 'path'
+	for tile in iterate_grid(grid, lambda t: t.type == 'obstacle'):
+		path_neighbours = grid.get_neighbours(tile, only_type='path')
+		#if there is 2 or more neighbours, and a random chance that random.random() is < 0.05
+		if len(path_neighbours) >= 2 and random.random() < chance:
+			# make the current obstacle tile a path tile.
+			tile.type = 'path'
+
+			#extra randomness
+			if random.random() < 0.3:
+				neighbours = grid.get_neighbours(tile, only_type='obstacle')
+				for neighbour in neighbours:
+					if random.random() < 0.2:
+						neighbour.type = 'path'
 
 def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 	'''Generate a Labyrinth using Prim's Method'''
 	#start with a grid of walls
-	for row in grid.grid:
-		for tile in row:
-			tile.type = 'obstacle'
+	for tile in iterate_grid(grid):
+		tile.type = 'obstacle'
 	
 	#mark the start tile tile as part of the path
 	start_tile = grid.get_tile_with_index(start_x,start_y)
@@ -206,7 +207,7 @@ def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 	itr = 0
 	while walls_set:
 		# print(f"Iteration {itr}, Walls left: {len(walls_set)}")
-		if itr > 2000: #prevent infinite loop (for testing)
+		if itr > 1999: #prevent infinite loop (for testing)
 			print("Maximum iterations reached")
 			break
 
@@ -230,13 +231,13 @@ def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 
 def is_connected(grid):
 	'''Basic Breadth First Search to check if all path tiles are connected.'''
-	visited = set()
 	all_path_tiles = set(iterate_grid(grid, lambda t: t.type == 'path'))
 	if not all_path_tiles:
 		return False
 	
 	#Use the set as a queue
 	start = next(iter(all_path_tiles))
+	visited = set()
 	queue = [(start.x, start.y)]
 	visited.add((start.x, start.y))
 
@@ -257,7 +258,7 @@ def bfs_region(grid,start_tile):
 	visited = set()
 	queue = [(start_tile.x, start_tile.y)]
 	region = set()
-	visited.add((start_tile.x, start_tile.y))
+	# visited.add((start_tile.x, start_tile.y))
 
 	while queue:
 		x, y = queue.pop(0)
@@ -284,6 +285,7 @@ def find_isolated_regions(grid):
 			region = bfs_region(grid,tile)
 			regions.append(region)
 			visited.update(region)
+
 	return regions
 
 def find_closest_region(region1,region2):
@@ -299,7 +301,7 @@ def find_closest_region(region1,region2):
 				closest_pair = ((x1,y1),(x2,y2))
 	return closest_pair
 
-def create_path(grid, start, end):
+def create_path(grid, start, end, protected_types:list=[]):
 	'''Create a straight path between two tiles.'''
 	x1, y1 = start
 	x2, y2 = end
@@ -309,22 +311,49 @@ def create_path(grid, start, end):
 	if x1 == x2:
 		for y in range(min(y1,y2), max(y1,y2)+1):
 			tile = grid.get_tile_with_index(x1,y)
-			tile.type = 'path'
+			if tile.type not in protected_types:
+				tile.type = 'path'
 			path_tiles.append((x1,y))
 	
 	#vertical path
 	elif y1 == y2:
 		for x in range(min(x1,x2), max(x1,x2)+1):
 			tile = grid.get_tile_with_index(x,y1)
-			tile.type = 'path'
+			if tile.type not in protected_types:
+				tile.type = 'path'
 			path_tiles.append((x,y1))
 	
 	#horizontal path
+	#go horizonal first,, then vertical
+	else:
+		#random order
+		if random.choice([True,False]):
+			for x in range(min(x1,x2), max(x1,x2)+1):
+				tile = grid.get_tile_with_index(x,y1)
+				if tile.type not in protected_types:
+					tile.type = 'path'
+				path_tiles.append((x,y1))
+			for y in range(min(y1, y2), max(y1, y2)+1):
+				tile = grid.get_tile_with_index(x2,y)
+				if tile.type not in protected_types:
+					tile.type = 'path'
+				path_tiles.append((x2,y))
+		else:
+			for y in range(min(y1, y2), max(y1, y2)+1):
+				tile = grid.get_tile_with_index(x2,y)
+				if tile.type not in protected_types:
+					tile.type = 'path'
+				path_tiles.append((x2,y))
+			for x in range(min(x1,x2), max(x1,x2)+1):
+				tile = grid.get_tile_with_index(x,y1)
+				if tile.type not in protected_types:
+					tile.type = 'path'
+				path_tiles.append((x,y1))
 	
 	#return
 	return path_tiles
 
-def connect_isolated_regions(grid,max_region_size=8):
+def connect_isolated_regions(grid,max_region_size=10):
 	'''Connect isolated regions of path tiles to ensure a fully connected grid.'''
 	regions = find_isolated_regions(grid)
 
@@ -371,7 +400,7 @@ def connect_isolated_regions(grid,max_region_size=8):
 	#return
 	return grid
 
-def control_density(grid,target_density=0.7,preserve_tiles=None):
+def control_density(grid,target_density=0.5,preserve_tiles=None):
 	'''Control density of path_tiles'''
 	if preserve_tiles is None:
 		preserve_tiles = set()
@@ -394,16 +423,29 @@ def control_density(grid,target_density=0.7,preserve_tiles=None):
 				continue
 			#check if changing this tile to a path would increase the density to closer to the target_density
 			tile.type = 'path'
-			if is_connected(grid):
-				path_tiles.append(tile)
-				current_density:float = len(path_tiles) / total_tiles
-				if current_density >= target_density:
-					break
-			else:
+			path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
+			current_density = len(path_tiles) / total_tiles
+			
+			if current_density >= target_density:
+				break
+			elif not is_connected(grid):
 				tile.type = 'obstacle'
-	elif current_density >= target_density:
-		#add more obstacles (NOT TYPICALLY USED)
-		return
+				path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
+	
+	elif current_density > target_density:
+		#add more obstacles if density is too high
+		path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
+		random.shuffle(path_tiles)
+		for tile in path_tiles:
+			if (tile.x, tile.y) not in preserve_tiles:
+				tile.type = 'obstacle'
+				path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
+				current_density:float = len(path_tiles) / total_tiles
+
+				if current_density <= target_density:
+					break
+				elif not is_connected(grid):
+					tile.type = 'path'
 
 def connect_corners_to_center(grid):
 	width, height = grid.width, grid.height
@@ -436,7 +478,7 @@ def populate(grid):
 	print()
 	print("Adding Branching...")
 
-	add_branching(grid)
+	# add_branching(grid)
 
 	print("Branching Added.")
 	print()
@@ -448,13 +490,13 @@ def populate(grid):
 	print()
 	print("Controlling density...")
 
-	control_density(grid)
+	# control_density(grid,0.01)
 	
 	print("Density Controlled")
 	print()
 	print("Connecting corners to center...")
 
-	connect_corners_to_center(grid)
+	# connect_corners_to_center(grid)
 
 	print("Corners connected.")
 	print()
@@ -465,3 +507,7 @@ def populate(grid):
 	print("Long-range cross sections connected.")
 	#return
 	return grid
+
+#===========================================================================#
+def random_dfs_maze_generate(grid,start,end):
+	pass
