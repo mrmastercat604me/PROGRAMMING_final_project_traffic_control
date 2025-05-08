@@ -83,6 +83,15 @@ class Tile:
 			f = self.f
 		return g, h, f
 	
+	def get_direction(self,tile):
+		#(0,0) and (2,0)
+		dx = self.x - tile.x
+		dy = self.y - tile.y
+		
+		if (dx, dy) in DIRECTIONS:
+			return (dx, dy)
+		else:
+			return None
 class Grid:
 	def __init__(self, width:int, height:int,x:int=0,y:int=0):
 		self.width = width

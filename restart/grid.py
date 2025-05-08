@@ -21,19 +21,17 @@ def draw_grid(surface, grid)->'pygame.Surface':
 			elif tile.type == 'obstacle':
 				pygame.draw.rect(surface,(0,0,0),create_rect)
 				#draw white border around tile
-				pygame.draw.rect(surface,(255,255,255),create_rect,1)
+				# pygame.draw.rect(surface,(255,255,255),create_rect,1)
 			
 	return surface
 
-def select_edge_tile(grid,count:int=1,edge_range:int=3,except_tile:'Tile'=None,except_edge:str=None):
+def select_edge_tile(grid,count:int=1,edge_range:int=3,except_tile=None,except_edge:str=None):
 	'''
 	The argument "count" is how many tiles to output.
 
-	The argument "except_tile" is a tile to avoid.
+	The argument "except_tile" is a tile or tile.type to avoid.
 
-	The argument "except_edge" is an edge to avoid generating a tile from
-
-	The argument "avoid_radius" needs "except_tile"
+	The argument "except_edge" is an edge to avoid generating a tile from, edges include: 'top', 'left', 'bottom', 'right'
 
 	Return a tuple of (tile, edge) if count == 1,
 
@@ -76,7 +74,7 @@ def select_edge_tile(grid,count:int=1,edge_range:int=3,except_tile:'Tile'=None,e
 				random_tiles_list.append((random_tile,edge))
 				finding = False
 				break #break out of loop to continue to next edge tile
-			if (isinstance(except_tile,Tile) and random_tile != except_tile):
+			if (isinstance(except_tile,Tile) and ((random_tile != except_tile) or (random_tile.type != except_tile))):
 				random_tiles_list.append((random_tile,edge))
 				finding = False
 				break
@@ -91,78 +89,6 @@ def select_edge_tile(grid,count:int=1,edge_range:int=3,except_tile:'Tile'=None,e
 	else:
 		return_list = list(random.sample(population=random_tiles_list,k=count)) #takes count many items from the population without any repeating elements
 		return return_list #[(tile,edge),(tile,edge)...]
-
-# def populate_destinations(grid,settings):
-# 	colour_count = settings.get("colour_count") #return an int
-# 	colours_dict = settings.get("colour_list") #return a dict of colours and names
-# 	colours_list = random.sample(list(colours_dict.values()),colour_count)
-# 	pairs = settings.get("pairs")
-# 	tiles_in_pairs = []
-# 	for colour in colours_list:
-# 		for pair in range(pairs):
-# 			location1, location1_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs)
-# 			tiles_in_pairs.append(location1)
-# 			location2, location2_edge = select_edge_tile(grid,1,edge_range=edge_range,except_tile=tiles_in_pairs,except_edge=location1_edge)
-# 			tiles_in_pairs.append(location2)
-# 			pair1 = DestinationPair(grid,location1,location2,colour)
-
-# def is_surrounded_by_walls(grid,tile):
-# 	'''
-# 	Checks if all surrounding tiles are obstacles (o.e., walls).
-# 	'''
-# 	surrounding = grid.get_neighbours(tile, only_type=['obstacle','endpoint','path'])
-# 	if not surrounding:
-# 		return False
-
-# 	return sum(1 for n in surrounding if n.type == 'obstacle') >= len(surrounding)-1
-
-# def get_valid_neighbours(grid,tile):
-# 	"""
-# 	Returns a list of valid neighbour coordinates that can be used to carve the maze.
-# 	A valid neighbour is an 'obstacle' tile that is surrounded by walls.
-# 	"""
-# 	valid_neighbours = []
-
-# 	# Use your method to get all neighbours of type 'obstacle'
-# 	obstacle_neighbours = grid.get_neighbours(tile, only_type='obstacle')
-# 	#shuffle the obstacle neighbours list for more random exploration
-# 	random.shuffle(obstacle_neighbours)
-# 	for neighbour in obstacle_neighbours:
-# 		if is_surrounded_by_walls(grid, neighbour):
-# 			valid_neighbours.append(neighbour)
-
-# 	return valid_neighbours
-
-# def generate_labyrinth(grid,start_x,start_y):
-# 	#start with a grid of walls
-# 	for row in grid.grid:
-# 		for tile in row:
-# 			tile.type = 'obstacle'
-	
-# 	#Random Depth-First-Search
-# 	stack = [(start_x,start_y)]
-# 	grid.get_tile_with_index(start_x,start_y).type = 'path' #set the start tile as a path
-
-# 	#introduce complexity through limit of backtracks
-# 	backtrack_limit = 5
-# 	while stack:
-# 		x, y = stack[-1]
-# 		current_tile = grid.get_tile_with_index(x,y)
-# 		neighbours = get_valid_neighbours(grid,current_tile)
-		
-# 		if neighbours:
-# 			#randomly choose a neighbour to move to
-# 			next_tile = random.choice(neighbours)
-# 			#make a path to neighbour
-# 			next_tile.type = 'path'
-# 			#push the current tile to the stack and move to the next tile
-# 			stack.append((next_tile.x,next_tile.y))
-# 		#allow backtracking after a few moves
-# 		elif len(stack) > backtrack_limit:
-# 			stack.pop()
-# 		else:
-# 			#backtrack if there are no valid neighbours
-# 			stack.pop()
 
 def iterate_grid(grid,condition=None):
 	for row in grid.grid:
@@ -469,45 +395,42 @@ def random_cross_connect(grid, count=3, min_distance=5):
 		if connections >= count:
 			break
 
+#===========================================================================#
+
 def populate(grid):
-	print("Generating Labyrinth...")
+	# print("Generating Labyrinth...")
 
-	generate_labyrinth_prims(grid)
+	generate_labyrinth_prims(grid, (grid.width-1)//2, (grid.height-1)//2)
 
-	print("Labyrinth Generated.")
-	print()
-	print("Adding Branching...")
+	# print("Labyrinth Generated.")
+	# print()
+	# print("Adding Branching...")
 
-	# add_branching(grid)
+	add_branching(grid)
 
-	print("Branching Added.")
-	print()
-	print("Connecting Isolated Regions...")
+	# print("Branching Added.")
+	# print()
+	# print("Connecting Isolated Regions...")
 
 	grid = connect_isolated_regions(grid)
 
-	print("Isolated Regions Connected.")
-	print()
-	print("Controlling density...")
+	# print("Isolated Regions Connected.")
+	# print()
+	# print("Controlling density...")
 
 	# control_density(grid,0.01)
 	
-	print("Density Controlled")
-	print()
-	print("Connecting corners to center...")
+	# print("Density Controlled")
+	# print()
+	# print("Connecting corners to center...")
 
 	# connect_corners_to_center(grid)
 
-	print("Corners connected.")
-	print()
-	print("Adding long-range cross connections...")
+	# print("Corners connected.")
+	# print()
+	# print("Adding long-range cross connections...")
 
-	random_cross_connect(grid, count=4)
+	# random_cross_connect(grid, count=4)
 
-	print("Long-range cross sections connected.")
-	#return
+	# print("Long-range cross sections connected.")
 	return grid
-
-#===========================================================================#
-def random_dfs_maze_generate(grid,start,end):
-	pass

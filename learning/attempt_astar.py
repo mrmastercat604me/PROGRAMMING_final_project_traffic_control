@@ -282,11 +282,11 @@ if __name__ == "__main__":
 
 	grid = Grid(GRID_WIDTH,GRID_HEIGHT)
 
-	#make every tile start out as an obstacle
-	for row in range(grid.height):
-		for col in range(grid.width):
-			tile = grid.grid[row][col]
-			grid.toggle_obstacle(tile.x, tile.y)
+	# #make every tile start out as an obstacle
+	# for row in range(grid.height):
+	# 	for col in range(grid.width):
+	# 		tile = grid.grid[row][col]
+	# 		grid.toggle_obstacle(tile.x, tile.y)
 
 
 	running = True
