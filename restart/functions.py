@@ -1,5 +1,6 @@
 import pygame
 from variables import *
+from classes import Tile
 
 def draw_text(text:str,font:'pygame.font',color:str,surface:'pygame.Surface',x:int,y:int,centerSurface=None,width:int=None,height:int=None):
 		textobj = font.render(text, 1, color)
@@ -53,7 +54,14 @@ def horz_scroll_image(image,surface,y_pos=0,scroll=0)->int:
 	return scroll
 
 def manhattan_distance(pos1,pos2):
-	pos1_x, pos1_y = pos1
-	pos2_x, pos2_y = pos2
+	if isinstance(pos1,tuple):
+		pos1_x, pos1_y = pos1
+	elif isinstance(pos1,Tile):
+		pos1_x, pos1_y = pos1.x, pos1.y
+	if isinstance(pos2,tuple):
+		pos2_x, pos2_y = pos2
+	elif isinstance(pos2,Tile):
+		pos2_x, pos2_y = pos2.x, pos2.y
+		
 	manhattan_distance = abs(pos1_x - pos2_x) + abs(pos1_y - pos2_y)
 	return manhattan_distance
