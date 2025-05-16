@@ -16,6 +16,7 @@ def draw_grid(surface:pygame.Surface, grid:Grid)->'pygame.Surface':
 	Returns the updated coloured surface to be used.
 	'''
 	surface.fill((230,200,200))
+	#iterate through the grid tile by tile using indexing
 	for y in range(grid.height):
 		for x in range(grid.width):
 			tile = grid.grid[y][x]
@@ -93,7 +94,7 @@ def generate_labyrinth_prims(grid:Grid,start_x:int=0,start_y:int=0)->Grid:
 	#Initialise the set of the walls
 	walls_set = set()
 
-	#add the neighbouring walls of the start tile
+	#add the neighbouring walls of the start tile to the wall_set
 	for neighbour in grid.get_neighbours(start_tile,only_type='obstacle'):
 		walls_set.add(neighbour)
 	
@@ -132,22 +133,29 @@ def is_connected(grid:Grid,type:str='path'):
 	Returns a bool (True or False) depending on if all tiles can reach all other tiles.
 	'''
 	all_path_tiles = set(iterate_grid(grid, lambda t: t.type == type))
+	#if all_path_tiles is empty or None return a false
 	if not all_path_tiles:
 		return False
 	
 	#Use the set as a queue
+	#here we use hash 
 	start = next(iter(all_path_tiles))
 	visited = set()
 	queue = [(start.x, start.y)]
 	visited.add((start.x, start.y))
 
+	#while there are positions in the queue
 	while queue:
+		#get the first position and if it's in the visited set continue to the next item in the queue
 		x, y = queue.pop(0)
 		if (x,y) in visited:
 			continue
+		#obtain the tile using the position
 		tile = grid.get_tile_with_index(x,y)
+		#iterate through the neighbours of this tile
 		for neighbour in grid.get_neighbours(tile,only_type='path'):
 			coord = (neighbour.x,neighbour.y)
+			#if their position is not in visited, add it to the list and to the queue
 			if coord not in visited:
 				visited.add(coord)
 				queue.append(coord)
@@ -169,6 +177,7 @@ def bfs_region(grid:Grid,start_tile:Tile)->set[tuple[int,int]]:
 	region = set()
 	# visited.add((start_tile.x, start_tile.y))
 
+	#while there are positions in the queue
 	while queue:
 		x, y = queue.pop(0)
 		region.add((x,y))
@@ -549,3 +558,9 @@ def create_valid_locations(grid,pairs:int=3,max_global_attempts:int=50,max_pair_
 					reservations.pop(-1)
 		if len(reservations) == pairs:
 			return reservations
+		
+#if the user tries to run THIS file.
+if __name__ == "__main__":
+	print()
+	print("Cannot run this file :(")
+	print()

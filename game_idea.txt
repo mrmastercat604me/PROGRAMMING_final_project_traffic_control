@@ -38,5 +38,6 @@ All functions must include a comment explaining:
     What parameters it takes (if any)
     What it returns (if anything)
 All loops must include a comment describing their purpose.
-All conditionals (if, elif, else) must have a comment explaining what they check for and why.
+All conditionals (if, elif, else) must have a comment
+    explaining what they check for and why.
 Failure to properly comment your code will result in a point deduction.

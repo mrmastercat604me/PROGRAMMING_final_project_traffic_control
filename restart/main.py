@@ -7,6 +7,14 @@ from game import game
 pygame.init()
 
 def main_menu():
+	'''
+	Creates the main screen with no parameters.
+
+	All-powerful function to do EVERY aspect of the game using helper functions.
+
+	Returns nothing.
+	'''
+	
 	#create the main screen
 	pygame.display.set_caption("Maze-Flow-Connect")
 	screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),0,32)
