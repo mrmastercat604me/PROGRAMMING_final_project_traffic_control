@@ -60,8 +60,8 @@ class Tile:
 	def generate_manhattan_distance(self,node:'Tile') -> int:
 		self_node = (self.x, self.y)
 		node_1 = (node.x, node.y)
-		manhattan_distance = manhattan_distance(self_node,node_1)
-		return manhattan_distance
+		temp_manhattan_distance = manhattan_distance(self_node, node_1)
+		return temp_manhattan_distance
 	
 	def set_tile_values(self,g:int,h:int,f:int):
 		self.g = g
@@ -93,18 +93,21 @@ class Tile:
 		else:
 			return None
 class Grid:
-	def __init__(self, width:int, height:int,x:int=0,y:int=0):
+	def __init__(self, width:int, height:int,x:int=0,y:int=0,grid=None):
 		self.width = width
 		self.height = height
 		self.x = x
 		self.y = y
-		self.grid = []
-		for y in range(height):
-			row = []
-			for x in range(width):
-				col = Tile(x+self.x, y+self.y,type='obstacle')
-				row.append(col)
-			self.grid.append(row)
+		if isinstance(grid,list):
+			self.grid = grid
+		else:
+			self.grid = []
+			for y in range(height):
+				row = []
+				for x in range(width):
+					col = Tile(x+self.x, y+self.y,type='obstacle')
+					row.append(col)
+				self.grid.append(row)
 	
 	def list_of_tiles(self,count:int)->list:
 		all_tiles = [tile for row in self.grid for tile in row]
@@ -142,42 +145,6 @@ class Grid:
 		for neighbour in self.get_neighbours(tile):
 			neighbour.generate_tile_values(home_tile,goal_tile,grid=self)
 
-class DestinationPair:
-	def __init__(self, grid:'Grid', spawn_pos, destination_pos, colour:tuple):
-		if isinstance(spawn_pos,tuple):
-			spawner_x, spawner_y = spawn_pos
-			self.spawner_tile = grid.get_tile_with_index(x=spawner_x,y=spawner_y)
-		elif isinstance(spawn_pos,Tile):
-			self.spawner_tile = spawn_pos
-
-		if isinstance(destination_pos,tuple):
-			destination_x, destination_y = destination_pos
-			self.destination_tile = grid.get_tile_with_index(x=destination_x,y=destination_y)
-		elif isinstance(destination_pos,Tile):
-			self.destination_tile = destination_pos
-
-		self.colour = colour
-		self.pair = [self.spawner_tile,self.destination_tile]
-		self.update_visual()
-	
-	def update_visual(self):
-		for tile in self.pair:
-			tile.colour = self.colour
-
-class DebugFile:
-	def __init__(self,file):
-		self.file = file
-	
-	def write(self, text:str):
-		with open(self.file,"a+") as f:
-			# f.seek()
-			f.write(text+"\n")
-			f.truncate()
-		return
-	
-	def clear(self):
-		with open(self.file,"w+") as f:
-			f.write("")
-			f.truncate()
-		return
-
+	def copy(self):
+		temp_instance = Grid(self.width,self.height,grid=self.grid)
+		return temp_instance

@@ -105,3 +105,12 @@ if __name__ == "__main__":
 	blue_pair.move_car(0,(1,0))
 	print(blue_pair.cars)
 			
+
+
+list1 = [0]
+list2 = [1,2,3,4,5]
+print(list1)
+print(list2)
+print()
+list1 += list2
+print(list1)

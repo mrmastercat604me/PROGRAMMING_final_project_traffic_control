@@ -8,7 +8,7 @@ from grid import *
 pygame.init()
 
 
-def game(screen, surface:pygame.Surface, settings:list)->list:
+def game(screen, surface:pygame.Surface)->list:
 	'''
 	Function to create a new "window" by blanking the surface and drawing everything to the surface. The surface is then blit to the screen.
 
@@ -26,19 +26,10 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 	grid_surface = pygame.Surface((GRID_WIDTH,GRID_HEIGHT))
 	grid = Grid(GRID_COLS,GRID_ROWS)
 
-	#GENERATE PAIRS
-	# maybe implement a mandatory radius that the tiles have to be at or exceed?
-	# BE CAREFUL WITH THIS ^^^ MODIFY THE POPULATING SO IT CAN IMPLEMENT THIS AS A POSSIBILITY.
-	#
-	#TO WORK ON NEXT TIME: REWRITE THE POPULATE FUNCTION TO PROPERLY OUTPUT THE RESULT I WANT
-	populate(grid)
+	create_maze(grid)
 	
 	LeftClick = False
 	RightClick = False
-	score = []
-
-	frames = 0
-	seconds = 0
 
 	running = True
 	while running:
@@ -53,10 +44,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		LeftClick = False
 		RightClick = False
 		#-----------------------------------------#
-		#------------TIMED-LOGIC---------------#
-		if frames == FPS:
-			seconds += 1
-			frames = 0
 		#-----------------------------------#
 		#------------PYGAME-EVENT-HANDLING----------#
 		for event in pygame.event.get():
@@ -66,8 +53,30 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 				sys.exit()
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 				if confirm_game_exit_popup(screen,surface):
-					return score
-			
+					return
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+				print('c key pressed')
+				while True:
+					routes = create_valid_locations(grid,3)
+					if routes:
+						print("Routes created")
+						break
+					else:
+						print("NO ROUTES MADE")
+						break
+				temp_colours = []
+				for route in routes:
+					while True:
+						colour = random.choice(list(EASY_COLOURS.values()))
+						if colour not in temp_colours:
+							temp_colours.append(colour)
+							break
+					first_tile = route[0]
+					last_tile = route[-1]
+					first_tile.colour = colour
+					last_tile.colour = colour
+					for tile in route:
+						print(tile.type)
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1: #if left click
 					LeftClick = True
@@ -85,7 +94,6 @@ def game(screen, surface:pygame.Surface, settings:list)->list:
 		screen.blit(surface, (0,0))
 		pygame.display.flip()
 		mainClock.tick(FPS)
-		frames += 1
 		#---------------------------#
 
 if __name__ == "__main__":

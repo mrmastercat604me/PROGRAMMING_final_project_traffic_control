@@ -13,11 +13,12 @@ FPS = 60
 #GRID VARIABLES
 GRID_WIDTH:int = 600 #pixels
 GRID_HEIGHT:int = 600 #pixels
-GRID_COLS:int = 20
-GRID_ROWS:int = 20
+GRID_COLS:int = 15
+GRID_ROWS:int = 15
 TILE_SIZE_WIDTH:int = GRID_WIDTH // GRID_COLS
 TILE_SIZE_HEIGHT:int = GRID_HEIGHT // GRID_ROWS
 
+EDGES:list = ["top","left" ,"bottom","right"]
 DIRECTIONS:list = [(0,-1),(0,1),(-1,0),(1,0)] #up, down, left, right
 
 #COLOURS

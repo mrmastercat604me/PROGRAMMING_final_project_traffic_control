@@ -1,11 +1,20 @@
-import pygame, sys, random
+import pygame, random
 from functions import *
 from classes import *
 from variables import *
 
 pygame.init()
 
-def draw_grid(surface, grid)->'pygame.Surface':
+def draw_grid(surface:pygame.Surface, grid:Grid)->'pygame.Surface':
+	'''
+	Draws the grid with all of the tiles with their respective colours and borders.
+
+	"surface" is a pygame.Surface to pass in.
+
+	"grid" is a Grid to pass in.
+
+	Returns the updated coloured surface to be used.
+	'''
 	surface.fill((230,200,200))
 	for y in range(grid.height):
 		for x in range(grid.width):
@@ -14,89 +23,40 @@ def draw_grid(surface, grid)->'pygame.Surface':
 			create_rect = pygame.Rect(x*TILE_SIZE_WIDTH,y*TILE_SIZE_HEIGHT,TILE_SIZE_WIDTH,TILE_SIZE_HEIGHT)
 
 			#handle the type drawing logic here
-			if tile.type == 'path':
+			if tile.type == 'path' or tile.type == 'route':
 				pygame.draw.rect(surface,tile.colour,create_rect)
 				#draw black border around tile
 				pygame.draw.rect(surface,(0,0,0),create_rect, 1)
 			elif tile.type == 'obstacle':
 				pygame.draw.rect(surface,(0,0,0),create_rect)
-				#draw white border around tile
-				# pygame.draw.rect(surface,(255,255,255),create_rect,1)
 			
 	return surface
 
-def select_edge_tile(grid,count:int=1,edge_range:int=3,except_tile=None,except_edge:str=None):
+def iterate_grid(grid:Grid,condition=None):
 	'''
-	The argument "count" is how many tiles to output.
-
-	The argument "except_tile" is a tile or tile.type to avoid.
-
-	The argument "except_edge" is an edge to avoid generating a tile from, edges include: 'top', 'left', 'bottom', 'right'
-
-	Return a tuple of (tile, edge) if count == 1,
-
-	Returns a list of tuples [(tile,edge),(tile,edge)...] if count > 1
-	'''
-	if count > 4 or count <= 0:
-		raise ValueError("Count must be greater than 0 and less than or equal to 4.")
-	if count == 4 and except_edge != None:
-		raise ValueError("Count cannot be 4 when there is an except_edge.")
-	if except_edge:
-		except_edge.lower()
-		if except_edge not in ["top","left" ,"bottom","right"]:
-			raise SyntaxError("Except edge must be a valid edge.")
+	Iterate through the "grid" yielding all tiles with "condition" if any (otherwise yield all tiles).
 	
-	x_max = grid.width -1
-	#0 to x_max are valid indexes
-	y_max = grid.height -1
-	#0 to y_max are valid indexes
-	#-----DECLARE-EDGES-AND-LAMBDA-TO-CREATE-RANDOM-X,Y-VALUES-----#
-	edges = {
-		#edge name		#(generate random x value, generate random y value) when called
-		"top": lambda: (random.randint(0,x_max),random.randint(0,edge_range-1)),
-		"left": lambda: (random.randint(0,edge_range-1),random.randint(0,y_max)),
-		"bottom": lambda: (random.randint(0,x_max),random.randint(y_max-edge_range-1,y_max)),
-		"right": lambda: (random.randint(x_max-edge_range-1,x_max),random.randint(0,y_max))
-	}
-	#----------#
-	#-----GENERATE-LIST-OF-RANDOM-TILES-----#
-	random_tiles_list = []
-	return_list = []
-	for edge, coord_func in edges.items():
-		if except_edge:
-			if edge == except_edge:
-				continue
-		finding = True
-		while finding:
-			x, y = coord_func() #call each lambda
-			random_tile = grid.get_tile_with_index(x=x,y=y)
-			if except_tile is None:
-				random_tiles_list.append((random_tile,edge))
-				finding = False
-				break #break out of loop to continue to next edge tile
-			if (isinstance(except_tile,Tile) and ((random_tile != except_tile) or (random_tile.type != except_tile))):
-				random_tiles_list.append((random_tile,edge))
-				finding = False
-				break
-			if (isinstance(except_tile,list) and random_tile not in except_tile):
-				random_tiles_list.append((random_tile,edge))
-				finding = False
-				break
-	#----------#
-	#-----RETURN-TILE(S)-----#
-	if count == 1:
-		return random.choice(random_tiles_list) #return (tile, edge)
-	else:
-		return_list = list(random.sample(population=random_tiles_list,k=count)) #takes count many items from the population without any repeating elements
-		return return_list #[(tile,edge),(tile,edge)...]
+	"condition" is a lambda to assess the tile(s) by.
+	
+	ex: (lambda tile: tile.type == "path")
 
-def iterate_grid(grid,condition=None):
+	---This returns all tiles that have the type of "path"
+
+	Yields all tiles with "condition"
+	'''
 	for row in grid.grid:
 		for tile in row:
 			if (condition is None) or condition(tile):
 				yield tile
 
-def add_branching(grid,chance=0.05):
+def add_branching(grid:Grid,chance:float=0.05):
+	'''
+	Iterate through the "obstacle" tiles and randomly select a tile that has two or more "path" neighbours.
+
+	"chance" is a float between 0 and 1 that determines the random chance a tile is turned into a "path".
+
+	Returns None
+	'''
 	#iterate through the grid
 	for tile in iterate_grid(grid, lambda t: t.type == 'obstacle'):
 		path_neighbours = grid.get_neighbours(tile, only_type='path')
@@ -112,13 +72,21 @@ def add_branching(grid,chance=0.05):
 					if random.random() < 0.2:
 						neighbour.type = 'path'
 
-def generate_labyrinth_prims(grid,start_x=0,start_y=0):
-	'''Generate a Labyrinth using Prim's Method'''
-	#start with a grid of walls
+def generate_labyrinth_prims(grid:Grid,start_x:int=0,start_y:int=0)->Grid:
+	'''
+	Generate a Labyrinth using Prim's Method
+	
+	"start_x" is an optional int value for a starting x (default is 0)
+
+	"start_y" is an optional int value for a starting y (default is 0)
+
+	Returns an updated grid
+	'''
+	#turn all tiles in the grid into obstacles
 	for tile in iterate_grid(grid):
 		tile.type = 'obstacle'
 	
-	#mark the start tile tile as part of the path
+	#mark the "start_tile" tile as part of the path
 	start_tile = grid.get_tile_with_index(start_x,start_y)
 	start_tile.type = 'path'
 
@@ -153,11 +121,17 @@ def generate_labyrinth_prims(grid,start_x=0,start_y=0):
 		#remove the wall from the walls list
 		walls_set.remove(wall)
 		itr += 1
-	# print(f"Total iterations: {itr}")
+	return grid
 
-def is_connected(grid):
-	'''Basic Breadth First Search to check if all path tiles are connected.'''
-	all_path_tiles = set(iterate_grid(grid, lambda t: t.type == 'path'))
+def is_connected(grid:Grid,type:str='path'):
+	'''
+	Basic Breadth First Search to check if all "type" tiles are connected.
+
+	"type" is a tile.type to check if all tiles of the same type are connected (default is 'path').
+
+	Returns a bool (True or False) depending on if all tiles can reach all other tiles.
+	'''
+	all_path_tiles = set(iterate_grid(grid, lambda t: t.type == type))
 	if not all_path_tiles:
 		return False
 	
@@ -180,7 +154,16 @@ def is_connected(grid):
 
 	return visited == all_path_tiles
 
-def bfs_region(grid,start_tile):
+def bfs_region(grid:Grid,start_tile:Tile)->set[tuple[int,int]]:
+	'''
+	Find all tiles that are connected (the same type as start_tile) using the start_tile as a starting position.
+
+	Finds regions using a Breadth First Search approach.
+
+	"start_tile" is a tile to start from and to branch away from.
+
+	Returns a set of all of the tiles' positions in a region.
+	'''
 	visited = set()
 	queue = [(start_tile.x, start_tile.y)]
 	region = set()
@@ -190,15 +173,68 @@ def bfs_region(grid,start_tile):
 		x, y = queue.pop(0)
 		region.add((x,y))
 		tile = grid.get_tile_with_index(x,y)
-		for neighbour in grid.get_neighbours(tile,only_type='path'):
+		for neighbour in grid.get_neighbours(tile,only_type=start_tile.type):
 			coord = (neighbour.x, neighbour.y)
 			if coord not in visited:
 				visited.add(coord)
 				queue.append(coord)
 	return region
 
-def find_isolated_regions(grid):
-	'''Find all isolated regions of path tiles using a BFS.'''
+def bfs_tile(grid:Grid,start_tile:Tile, goal_tile:Tile,only_type:list[str] =['path'],exclude_tiles:list[Tile]=[]) ->list[Tile]:
+	'''
+	Find a "goal_tile" from a "start_tile" using a Breadth First Search.
+
+	"start_tile" is a tile in the grid to start from.
+
+	"goal_tile" is a different tile in the grid to end at.
+
+	"only_type" is a type(s) of tile.type to only include in the search.
+
+	"exclude_tiles" is a list of tiles to exclude in the search.
+
+	Returns a list of the path found (Returns [] if no path is found)
+	'''
+	total_useable_tiles = []
+	for tile_type in only_type:
+		current_useable_tiles = list(iterate_grid(grid,lambda t:t.type == tile_type))
+		total_useable_tiles += current_useable_tiles
+	print('finding route using BFS')
+
+	queue = [start_tile]
+	explored = [start_tile]
+	start_tile.parent_node = None
+
+	while len(queue) != 0:
+		print('in while loop')
+		currentNode = queue.pop(0)
+		if currentNode == goal_tile:
+			print('goal tile reached in while loop')
+			#make path out and return the path
+			currentPathNode = goal_tile
+			path = []
+			while currentPathNode != None:
+				path.append(currentPathNode)
+				currentPathNode = currentPathNode.parent_node
+			path.reverse()
+			return path
+		print('current node is not goal_tile')
+		for neighbour in grid.get_neighbours(currentNode):
+			# print(f'append {neighbour} to the explored and to the queue')
+			if neighbour not in explored and neighbour in total_useable_tiles and neighbour not in exclude_tiles:
+				explored.append(neighbour)
+				# print("make the neighbour's parent node the current node")
+				neighbour.parent_node = currentNode
+				queue.append(neighbour)
+	return []
+
+def find_isolated_regions(grid:Grid)-> bool | list[set[tuple[int,int]]]:
+	'''
+	Find all isolated regions of path tiles using a BFS.
+	
+	Each region is a set of connected tiles' positions { (x, y), (x, y), ...}.
+
+	Returns a list of all isolated regions
+	'''
 	if is_connected(grid):
 		return True
 	#Try to connect disconnected regions by adding new paths
@@ -214,8 +250,15 @@ def find_isolated_regions(grid):
 
 	return regions
 
-def find_closest_region(region1,region2):
-	'''Find the closest straight path between two regions'''
+def find_closest_region(region1:set[tuple[int,int]] | list[tuple[int,int]] ,region2:set[tuple[int,int]] | list[tuple[int,int]])->tuple:
+	'''
+	Finds the closest straight path between two regions.
+
+	"region1" is a region or a set of tiles that are connected.
+	"region2" is a second region.
+
+	Returns the two closest tiles' positions from each region ( (x1, y1), (x2, y2) )
+	'''
 	min_distance = float('inf')
 	closest_pair = None
 
@@ -227,18 +270,37 @@ def find_closest_region(region1,region2):
 				closest_pair = ((x1,y1),(x2,y2))
 	return closest_pair
 
-def create_path(grid, start, end, protected_types:list=[]):
-	'''Create a straight path between two tiles.'''
+def create_path(grid:Grid, start:tuple[int,int], end:tuple[int,int], protected_types:list[str]=[]) -> list:
+	'''
+	Create a *straight* path between two tiles by turning the connecting tiles into the same type as the start and end tiles.
+	
+	"start" is a starting tile's position.
+	
+	"end" is an ending tile's position.
+
+	"protected_types" is a list containing all of the tile types that cannot be modified.
+
+	"start" and "end" have to have the same type otherwise a path cannot be made.
+
+	Returns a list of the connecting path tiles' postitions. [ (x, y), (x, y), ... ]
+	'''
+
 	x1, y1 = start
 	x2, y2 = end
 	path_tiles = []
+	start_tile_type = grid.get_tile_with_index(x1,y1).type
+	goal_tile_type = grid.get_tile_with_index(x2,y2).type
+	if start_tile_type == goal_tile_type:
+		tile_type = start_tile_type
+	else:
+		raise Exception("'start' and 'end' should be postions of tiles of the same types.")
 
 	#Horizontal path
 	if x1 == x2:
 		for y in range(min(y1,y2), max(y1,y2)+1):
 			tile = grid.get_tile_with_index(x1,y)
 			if tile.type not in protected_types:
-				tile.type = 'path'
+				tile.type = tile_type
 			path_tiles.append((x1,y))
 	
 	#vertical path
@@ -246,42 +308,50 @@ def create_path(grid, start, end, protected_types:list=[]):
 		for x in range(min(x1,x2), max(x1,x2)+1):
 			tile = grid.get_tile_with_index(x,y1)
 			if tile.type not in protected_types:
-				tile.type = 'path'
+				tile.type = tile_type
 			path_tiles.append((x,y1))
 	
-	#horizontal path
-	#go horizonal first,, then vertical
+	#L-shaped path
+	#go horizonal first, then vertical
 	else:
 		#random order
 		if random.choice([True,False]):
 			for x in range(min(x1,x2), max(x1,x2)+1):
 				tile = grid.get_tile_with_index(x,y1)
 				if tile.type not in protected_types:
-					tile.type = 'path'
+					tile.type = tile_type
 				path_tiles.append((x,y1))
 			for y in range(min(y1, y2), max(y1, y2)+1):
 				tile = grid.get_tile_with_index(x2,y)
 				if tile.type not in protected_types:
-					tile.type = 'path'
+					tile.type = tile_type
 				path_tiles.append((x2,y))
 		else:
 			for y in range(min(y1, y2), max(y1, y2)+1):
 				tile = grid.get_tile_with_index(x2,y)
 				if tile.type not in protected_types:
-					tile.type = 'path'
+					tile.type = tile_type
 				path_tiles.append((x2,y))
 			for x in range(min(x1,x2), max(x1,x2)+1):
 				tile = grid.get_tile_with_index(x,y1)
 				if tile.type not in protected_types:
-					tile.type = 'path'
+					tile.type = tile_type
 				path_tiles.append((x,y1))
 	
 	#return
 	return path_tiles
 
-def connect_isolated_regions(grid,max_region_size=10):
-	'''Connect isolated regions of path tiles to ensure a fully connected grid.'''
-	regions = find_isolated_regions(grid)
+def connect_isolated_regions(grid:Grid,max_region_size:int=10)->Grid:
+	'''
+	Connect isolated regions of path tiles to ensure a fully connected grid.
+
+	"max_region_size" is an integer for the max tiles in a region (default is 10).
+
+	Returns the updated Grid
+	'''
+	regions:list[set] | bool = find_isolated_regions(grid)
+	if isinstance(regions, bool) and regions == True:
+		return grid
 
 	made_progress = True
 	while (len(regions) > 1) and (made_progress):
@@ -289,7 +359,7 @@ def connect_isolated_regions(grid,max_region_size=10):
 		#find the closest pair of regions
 		closest_pair = None
 		min_distance = float('inf')
-		region1, region2 = None, None
+		region1, region2 = set(), set()
 
 		#for loop iterate through regions, index and regions
 		for i, r1 in enumerate(regions):
@@ -326,111 +396,156 @@ def connect_isolated_regions(grid,max_region_size=10):
 	#return
 	return grid
 
-def control_density(grid,target_density=0.5,preserve_tiles=None):
-	'''Control density of path_tiles'''
-	if preserve_tiles is None:
-		preserve_tiles = set()
-	#count the total path tiles
-	path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
-	#total tiles
-	total_tiles:int = grid.width * grid.height
-	#calculate current density
-	current_density:float = len(path_tiles) / total_tiles
+def connect_corners_to_center(grid:Grid) -> None:
+	'''
+	Creates paths from the corners in towards the center of the grid.
 
-	#adjust current_density to meet target_density
-	if current_density < target_density:
-		#get the obstacle tiles
-		obstacle_tiles:list = list(iterate_grid(grid,lambda t: t.type == 'obstacle'))
-		#shuffle the list
-		random.shuffle(obstacle_tiles)
-
-		for tile in obstacle_tiles:
-			if (tile.x, tile.y) in preserve_tiles:
-				continue
-			#check if changing this tile to a path would increase the density to closer to the target_density
-			tile.type = 'path'
-			path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
-			current_density = len(path_tiles) / total_tiles
-			
-			if current_density >= target_density:
-				break
-			elif not is_connected(grid):
-				tile.type = 'obstacle'
-				path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
-	
-	elif current_density > target_density:
-		#add more obstacles if density is too high
-		path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
-		random.shuffle(path_tiles)
-		for tile in path_tiles:
-			if (tile.x, tile.y) not in preserve_tiles:
-				tile.type = 'obstacle'
-				path_tiles:list = list(iterate_grid(grid, lambda t: t.type == 'path'))
-				current_density:float = len(path_tiles) / total_tiles
-
-				if current_density <= target_density:
-					break
-				elif not is_connected(grid):
-					tile.type = 'path'
-
-def connect_corners_to_center(grid):
+	Returns Nothing
+	'''
 	width, height = grid.width, grid.height
 	corners = [(0,0), (width-1,0), (0,height-1), (width-1, height-1)]
 	center = (width // 2, height // 2)
 
 	for corner in corners:
 		create_path(grid, corner, center)
-
-def random_cross_connect(grid, count=3, min_distance=5):
-	path_coords = [(t.x, t.y) for t in iterate_grid(grid, lambda t: t.type == 'path')]
-	random.shuffle(path_coords)
-
-	connections = 0
-	for i, start in enumerate(path_coords):
-		for end in path_coords[i+1:]:
-			if manhattan_distance(start, end) >= min_distance:
-				create_path(grid, start, end)
-				connections += 1
-				break
-		if connections >= count:
-			break
-
 #===========================================================================#
 
-def populate(grid):
+def create_maze(grid:Grid)->Grid:
+	'''
+	Creates a randomized maze using a grid.
+
+	"grid" is a Grid.
+
+	Returns the updated grid.
+	'''
 	# print("Generating Labyrinth...")
 
 	generate_labyrinth_prims(grid, (grid.width-1)//2, (grid.height-1)//2)
 
-	# print("Labyrinth Generated.")
-	# print()
-	# print("Adding Branching...")
-
 	add_branching(grid)
-
-	# print("Branching Added.")
-	# print()
-	# print("Connecting Isolated Regions...")
 
 	grid = connect_isolated_regions(grid)
 
-	# print("Isolated Regions Connected.")
-	# print()
-	# print("Controlling density...")
+	connect_corners_to_center(grid)
 
-	# control_density(grid,0.01)
-	
-	# print("Density Controlled")
-	# print()
-	# print("Connecting corners to center...")
-
-	# connect_corners_to_center(grid)
-
-	# print("Corners connected.")
-	# print()
-	# print("Adding long-range cross connections...")
-
-	# random_cross_connect(grid, count=4)
-
-	# print("Long-range cross sections connected.")
 	return grid
+
+def return_edge_tiles(grid,edge_range:int=3,except_tile:Tile=None,type='path')->dict:
+	'''
+	The argument "edge_range" is how far from the edge to include the tiles from.
+
+	The argument "except_tile" is a tile(s) to avoid.
+
+	The argument "type" is a tile.type to only include in the search.
+	
+	Returns a dict of edges and a list of the tiles in that edge (one tile may be in more than one edge). {'edge': [tile,tile,...]}
+	'''
+	#-----GENERATE-LIST-OF-ALL-AVAILABLE-TILES----#
+	total_tiles = []
+	for tile in iterate_grid(grid,lambda t:t.type == type):
+		if isinstance(except_tile,Tile):
+			if tile == except_tile:
+				continue
+		elif isinstance(except_tile,list):
+			if tile in except_tile:
+				continue
+		else:
+			if tile not in total_tiles:
+				total_tiles.append(tile)
+	#---------------------------------------------#
+	#---make-the-temp-edge-lists---#
+	temp_top = []
+	temp_left = []
+	temp_bottom = []
+	temp_right = []
+	#---------------#
+	#-----SORT-TILES-AND-ADD-TO-THE-PROPER-LIST-----#
+	for tile in total_tiles:
+		#if the tile is on the top edge
+		if tile.y < edge_range:
+			if tile not in temp_top:
+				temp_top.append(tile)
+		#if the tile is on the left edge
+		if tile.x < edge_range:
+			if tile not in temp_left:
+				temp_left.append(tile)
+		#if the tile is on the bottom edge
+		if tile.y > (grid.height-1-edge_range):
+			if tile not in temp_bottom:
+				temp_bottom.append(tile)
+		#if the tile is on the right edge
+		if tile.x > (grid.width-1-edge_range):
+			if tile not in temp_right:
+				temp_right.append(tile)
+	#----------#
+	#------UPDATE-edge_tiles-----#
+	edge_tiles = {
+		'top': temp_top,
+		'left':temp_left,
+		'bottom':temp_bottom,
+		'right':temp_right
+	}
+	#-----RETURN-TILE(S)-----#
+	return edge_tiles
+
+def create_valid_locations(grid,pairs:int=3,max_global_attempts:int=50,max_pair_attempts:int=50,edge_range:int=3,avoid_radius:int=7)->list:
+	'''
+	Creates "pairs" many paths of tiles that don't intersect.
+
+	"pairs" is an integer of how many paths to attempt to create"
+
+	"max_global_attempts" is an integer of how many total attempts to make all three pairs.
+
+	"max_pair_attempts" is an integer of how mnay total attempts to make one pair.
+
+	"edge_range" is an integer to determine what edge tiles are to be selected for starting and ending points.
+
+	"avoid_radius" is an integer to determine a minimum manhattan radius (not length) of each route.
+
+	Returns a list of paths where each path is a list that contains tiles
+	'''
+	temp_grid = grid.copy()
+	edge_tiles_dict = return_edge_tiles(temp_grid,edge_range,type='path')
+
+	attempt = 0
+	while attempt <= max_global_attempts:
+		attempt += 1
+		#place each pair
+		exclude_tiles = []
+		reservations = []
+		for pair_num in range(pairs):
+			pair_made = False
+			pair_attempts = 0
+			while pair_made is False:
+				if pair_attempts > max_pair_attempts:
+					return None
+				else:
+					pair_attempts += 1
+				#PROBLEM HERE WHERE EVENTUALLY (POSSIBLY) THE CHOSEN EDGE MAY ONLY HAVE TILES THAT ARE IN THE EXCLUDE_TILES
+				start_edge = random.choice(list(edge_tiles_dict.keys()))
+				while True:
+					start_tile = random.choice(edge_tiles_dict[start_edge])
+					if start_tile not in exclude_tiles:
+						break
+				#------#
+				while True:
+					goal_edge = random.choice(list(edge_tiles_dict.keys()))
+					if goal_edge != start_edge:
+						goal_tile = random.choice(edge_tiles_dict[goal_edge])
+						if (goal_tile != start_tile) and (manhattan_distance((start_tile.x,start_tile.y),(goal_tile.x,goal_tile.y)) > avoid_radius) and (goal_tile not in exclude_tiles):
+							break
+
+				route = bfs_tile(temp_grid,start_tile,goal_tile,'path',exclude_tiles)
+
+				if route:
+					reservations.append(route)
+					for tile in route:
+						exclude_tiles.append(tile)
+					pair_made = True
+
+				if pair_made is False:
+					for tile in reservations[-1]:
+						exclude_tiles.remove(tile)
+					reservations.pop(-1)
+		if len(reservations) == pairs:
+			return reservations

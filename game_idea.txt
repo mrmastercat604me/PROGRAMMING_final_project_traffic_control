@@ -1,72 +1,42 @@
-Flow Free-style Puzzles:
-Gameplay:
-Create grids where players connect pairs of tiles of the same color with non-intersecting paths.
-
-Challenge:
-Procedurally generate puzzles where the paths should be challenging,
-but not too predictable. The key is ensuring that multiple paths can exist,
-but some are blocked or forced to take certain turns.
-
-What you can use:
-A* pathfinding can help ensure paths are solvable.
-Random obstacles and varying grid sizes can make it more interesting.
-
-Labyrinth Solver:
-Gameplay:
-Generate random mazes, and the player’s task is to find a path from start to finish.
-
-Challenge:
-You can create time challenges, shifting mazes,
-or have “rooms” that need to be solved in sequence.
-
-What you can use:
-A* can help the AI or the player find a path.
-Adding environmental elements like walls that shift or traps can create more engaging puzzles.
-
-What if we combine them?
-You could design a labyrinth-style puzzle where the grid is filled with flow-style paths.
-The player could be tasked with solving multiple path pairs in the maze, making it more engaging.
-
-The maze could have parts that are already solved,
-or maybe parts that randomly block paths and change with time.
-
-As the player progresses, the puzzle could shift or have new rules added—for example,
-you can make paths block certain tiles temporarily.
-
-
-# MAZE GENERATION
-CORRIDORS
-LOTS OF INTERCONNECTIVTY 
-VARIABLE WIDTHS OF CORRIDORS
-SMALL POCKETS OF ROUNDABOUTS
-
-==============================
-- BASE MAZE USING RANDOM DFS
-- RANDOM INSERTS OF ROUNDABOUTS
-- WIDEN SOME CORRIDORS
-- ADD EXRA INTERCONNECTIVITY
-
-
+#########
+#---------------#
+MAZE-FLOW-CONNECT
+#---------------#
+GENERATE A MAZE WITH COLOURED PAIRS
+ALL PAIRS CONNECT AND CAN BE SOLVED
+ONCE ALL PAIRS 
+#########
 
 '''
-function generate_maze(width, height):
-    // Width and height are logical maze cells, not full grid
-    grid_width = width * 2 + 1
-    grid_height = height * 2 + 1
-    maze = 2D array of size (grid_height x grid_width), filled with WALL (O)
+To guarantee you get exactly k pairs every time (or know for sure that it’s impossible),
+you need to move from a “greedy one-shot” strategy to a small backtracking search over the
+placement of pairs. Here’s the gist:
 
-    function carve(x, y):
-        maze[y][x] = PATH (P)
-        directions = shuffle([(0, -2), (2, 0), (0, 2), (-2, 0)])  // NESW
+Pre-collect all candidate edge tiles for each edge.
 
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            if in_bounds(nx, ny) and maze[ny][nx] == WALL:
-                // Carve passage through wall between
-                maze[y + dy // 2][x + dx // 2] = PATH
-                carve(nx, ny)
+Recursively place pair 0, pair 1, …, pair k−1.
 
-    // Start at (1,1)
-    carve(1, 1)
-    return maze
+For each pair, loop through a (shuffled) list of possible (start, edge) × (goal, edge') choices.
+
+Attempt to carve a path avoiding any tiles already reserved by earlier pairs.
+
+If successful, mark those tiles reserved and recurse to the next pair.
+
+If the recursion fails, undo the reservation and try the next candidate.
+
+If you exhaust all choices for pair i without success, backtrack to pair i−1.
+
+If you finish pair k−1, you’ve placed all k disjoint paths.
+
+This guarantees that either you find k fully disjoint routes or you’ll exhaust the search
+and know it’s not possible with the given labyrinth and parameters.
 '''
+
+
+All functions must include a comment explaining:
+-What the function does
+    What parameters it takes (if any)
+    What it returns (if anything)
+All loops must include a comment describing their purpose.
+All conditionals (if, elif, else) must have a comment explaining what they check for and why.
+Failure to properly comment your code will result in a point deduction.
