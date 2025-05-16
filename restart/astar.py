@@ -3,12 +3,18 @@ pygame.init()
 from classes import Grid, Tile
 
 
-def find_path_astar(grid:'Grid',start_tile:'Tile',goal_tile:'Tile',only_type:list=['path'],random_factor:int=0) -> list:
+def find_path_astar(grid:'Grid',start_tile:'Tile',goal_tile:'Tile',only_type:list=['path']) -> list:
 	'''
 	Uses A* search algorithm to find a valid path of only_type between start_tile and goal_tile.
 	
-	If random_factor != 0,
+	"start_tile" is a tile to start from.
+	
+	"goal_tile" is a tile to end at.
 
+	"only_type" is a list of tile.types that are accepted in the search.
+
+	Returns a path from the start_tile to the goal_tile including those two,
+	The path is a list of Tiles.
 	'''
 	#create two lists to separate different 'nodes' visited and needing to search
 	ToSearchNodes = []
@@ -48,24 +54,21 @@ def find_path_astar(grid:'Grid',start_tile:'Tile',goal_tile:'Tile',only_type:lis
 			return path
 
 		#test each neighbour to find the best neighbour
-		if (random_factor == 0) or ((random_factor != 0)):
-			for neighbour in grid.get_neighbours(currentNode,only_type):
-				if neighbour in ProcessedNodes:
-					continue
+		for neighbour in grid.get_neighbours(currentNode,only_type):
+			if neighbour in ProcessedNodes:
+				continue
 
-				costToNeighbourNode = currentNode.g + currentNode.generate_manhattan_distance(neighbour)
+			costToNeighbourNode = currentNode.g + currentNode.generate_manhattan_distance(neighbour)
 
-				if (neighbour not in ToSearchNodes) or (costToNeighbourNode < neighbour.g):
-					g = costToNeighbourNode #g can possibly change depending on the path we took
-					h = neighbour.generate_manhattan_distance(goal_tile)
-					f = g + h
-					neighbour.set_tile_values(g,h,f)
-					neighbour.parent_node = currentNode
+			if (neighbour not in ToSearchNodes) or (costToNeighbourNode < neighbour.g):
+				g = costToNeighbourNode #g can possibly change depending on the path we took
+				h = neighbour.generate_manhattan_distance(goal_tile)
+				f = g + h
+				neighbour.set_tile_values(g,h,f)
+				neighbour.parent_node = currentNode
 
-					if (neighbour not in ToSearchNodes):
-						ToSearchNodes.append(neighbour)
-		else:
-			pass
+				if (neighbour not in ToSearchNodes):
+					ToSearchNodes.append(neighbour)
 
 	#if no path is found, return an empty path
 	return []
