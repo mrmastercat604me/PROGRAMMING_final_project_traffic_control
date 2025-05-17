@@ -46,6 +46,7 @@ def main_menu():
 	RightClick = False
 
 	running = True
+	#while the user has not quit
 	while running:
 		#----UPDATE-SCREEN-BACKGROUND-SCROLL-------#
 		scroll = horz_scroll_image(BackgroundImage,surface,scroll=scroll)
@@ -75,18 +76,19 @@ def main_menu():
 		RightClick = False
 		#------------------------------------------#
 		#----------PYGAME-EVENT-HANDLING----------#
+		#iterate through all of the events in pygame
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if event.type == pygame.QUIT: #if hit the corner x
 				running = False
-			if event.type == pygame.MOUSEBUTTONDOWN:
+			if event.type == pygame.MOUSEBUTTONDOWN: #if mouse button is clicked
 				if event.button == 1: #if left click
 					LeftClick = True
 				if event.button == 3: #if right click
 					RightClick = True
-			if event.type == pygame.MOUSEBUTTONUP:
-				if event.button == 1:
+			if event.type == pygame.MOUSEBUTTONUP: #if mouse button is not clicked
+				if event.button == 1: #if left not clicked
 					LeftClick = False
-				if event.button == 3:
+				if event.button == 3: #if right not clicked
 					RightClick = False
 		#-----------------------------------------#
 		#-----DRAW-THE-SURFACE-TO-THE-SCREEN-PROPERLY----------#
@@ -96,6 +98,7 @@ def main_menu():
 		mainClock.tick(FPS)
 		#----------------------#
 
+#if the user runs this file
 if __name__ == "__main__":
 	main_menu()
 	pygame.quit()

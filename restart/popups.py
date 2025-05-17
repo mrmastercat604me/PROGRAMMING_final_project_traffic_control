@@ -6,6 +6,12 @@ from variables import *
 pygame.init()
 
 def confirm_game_exit_popup(screen,surface):
+	'''
+	Creates an overlay screen to be used as if it's a separate window.
+
+	Takes the current screen and surface.
+	returns bool regarding whether the user is exiting
+	'''
 	#-----------CREATE-A-TRANSPARENT-SURFACE----------#
 	transparent_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
 	transparent_surface.fill((96,96,96,150))
@@ -36,6 +42,7 @@ def confirm_game_exit_popup(screen,surface):
 	RightClick = False
 
 	running = True
+	#while the user has not closed this menu
 	while running:
 		#----------DRAW-THE-BUTTONS----------------#
 		confirm_text.draw()
@@ -55,6 +62,10 @@ def confirm_game_exit_popup(screen,surface):
 		#----------------------------------#
 		#-------PYGAME-EVENT-HANDLING----------#
 		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				running = False
+				pygame.quit()
+				sys.exit()
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 				return False
 			if event.type == pygame.MOUSEBUTTONDOWN:
@@ -74,6 +85,7 @@ def confirm_game_exit_popup(screen,surface):
 		mainClock.tick(FPS)
 		#----------------------#
 
+#if the user tries to run THIS file
 if __name__ == "__main__":
 	print()
 	print("Cannot run this file :(")

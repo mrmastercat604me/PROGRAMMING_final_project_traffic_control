@@ -103,3 +103,9 @@ difficulties_dict = {
 	}
 }
 difficulties_list = list(difficulties_dict.keys())
+
+#if the user tries to run THIS file.
+if __name__ == "__main__":
+	print()
+	print("Cannot run this file :(")
+	print()

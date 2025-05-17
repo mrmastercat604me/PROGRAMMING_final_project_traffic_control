@@ -88,6 +88,7 @@ def game(screen, surface:pygame.Surface)->None:
 					last_tile.colour = colour
 					for tile in route:
 						print(tile.type)
+			#--------------------------------------------#
 
 			#if the user uses the mouse buttons
 			if event.type == pygame.MOUSEBUTTONDOWN:
