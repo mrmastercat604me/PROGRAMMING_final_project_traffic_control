@@ -26,6 +26,10 @@ def draw_grid(surface:pygame.Surface, grid:Grid)->'pygame.Surface':
 			#handle the type drawing logic here
 			if tile.type == 'obstacle':
 				pygame.draw.rect(surface,(0,0,0),create_rect)
+			elif tile.type == 'path':
+				pygame.draw.rect(surface,(255,255,255),create_rect)
+				#draw a black border
+				pygame.draw.rect(surface,(0,0,0),create_rect, 1)
 			else:
 				pygame.draw.rect(surface,tile.colour,create_rect)
 				#draw black border around tile

@@ -66,7 +66,7 @@ def game(screen, surface:pygame.Surface)->None:
 				if confirm_game_exit_popup(screen,surface):
 					return
 			#TEMPORARY
-			if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
 				print('c key pressed')
 				routes = create_valid_locations(grid,3,50,50,3,5)
 				if routes:
@@ -75,6 +75,12 @@ def game(screen, surface:pygame.Surface)->None:
 					print("NO ROUTES MADE")
 					
 				colour_edges_of_routes(grid,routes)
+			
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+				for tile in iterate_grid(grid):
+					if "_route" in tile.type:
+						tile.type = 'path'
+						tile.colour = (255,255,255)
 			#--------------------------------------------#
 
 			#if the user uses the mouse buttons
@@ -84,29 +90,41 @@ def game(screen, surface:pygame.Surface)->None:
 					tile = grid.get_tile_with_pos(mouse_pos[0],mouse_pos[1])
 					print(tile)
 					if tile:
-						if '_end' in tile.type and tile not in highlighted_path:
-							highlighted_type = f'{tile.colour}_route'
-							highlighted_path.append(tile)
-							highlighted_colour = tile.colour
+						if '_end' in tile.type and len(reservation) == 0:
+							finalise_reservation = False
+							if tile not in reservation:
+								reservation.append(tile)
+							final_reservation_colour = tile.colour
 				if event.button == 3: #if right click
 					RightClick = True
 			#if left click and mouse moves
 			if event.type == pygame.MOUSEMOTION:
 				if LeftClick:
 					tile = grid.get_tile_with_pos(mouse_pos[0],mouse_pos[1])
-					if tile and tile not in highlighted_path:
-						if len(highlighted_path) > 0:
-							if tile in grid.get_neighbours(highlighted_path[-1],'path'):
-								highlighted_path.append(tile)
-								tile.colour = highlighted_colour
+					if tile and len(reservation) > 0 and not finalise_reservation:
+						if tile not in reservation:
+							if tile in grid.get_neighbours(reservation[-1],'path'):
+								reservation.append(tile)
+							if tile.type == f'{final_reservation_colour}_end':
+								finalise_reservation = True
+						for tile in reservation:
+							if "_end" not in tile.type:
+								tile.colour = final_reservation_colour
+								tile.type = f'{final_reservation_colour}_route'
 
 			#if the user is not using the mouse buttons
 			if event.type == pygame.MOUSEBUTTONUP:
 				if event.button == 1: #if not left clicking
 					LeftClick = False
-					highlighted_path = []
-					highlighted_type = None
-					highlighted_colour = None
+					if finalise_reservation and len(reservation) > 0:
+						pass
+					if not finalise_reservation and len(reservation) > 0:
+						for tile in reservation:
+							if "_end" not in tile.type:
+								tile.type = 'path'
+								tile.colour = (255,255,255)
+					reservation = []
+					final_reservation_colour = None
 				if event.button == 3: #if not right clicking
 					RightClick = False
 
