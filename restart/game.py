@@ -102,11 +102,21 @@ def game(screen, surface:pygame.Surface)->None:
 				if LeftClick:
 					tile = grid.get_tile_with_pos(mouse_pos[0],mouse_pos[1])
 					if tile and len(reservation) > 0 and not finalise_reservation:
+						last_tile = reservation[-1]
+						second_last_tile = reservation[-2] if len(reservation) > 1 else None
 						if tile not in reservation:
-							if tile in grid.get_neighbours(reservation[-1],'path'):
+							if tile in grid.get_neighbours(last_tile,'path'):
 								reservation.append(tile)
-							if tile.type == f'{final_reservation_colour}_end':
+							if tile.type == f'{final_reservation_colour}_end' and tile in grid.get_neighbours(last_tile,f'{final_reservation_colour}_end'):
+								reservation.append(tile)
 								finalise_reservation = True
+
+						if tile is second_last_tile:
+							removed = reservation.pop()
+							if "_end" not in removed.type:
+								removed.type = 'path'
+								removed.colour = (255,255,255)
+
 						for tile in reservation:
 							if "_end" not in tile.type:
 								tile.colour = final_reservation_colour
