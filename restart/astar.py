@@ -2,6 +2,7 @@ import pygame
 pygame.init()
 from classes import Grid, Tile
 
+#UNUSED
 
 def find_path_astar(grid:'Grid',start_tile:'Tile',goal_tile:'Tile',only_type:list=['path']) -> list:
 	'''

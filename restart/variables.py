@@ -42,7 +42,6 @@ NORMAL_COLOURS = {
 	"yellow": (255,255,0),
 	"greenyellow": (185,255,0),
 	"green": (0,255,0),
-	"lime": (45,255,0),
 	"blue": (0,0,255),
 	"skyblue": (0,218,255),
 	"darkviolet": (175,0,255),
@@ -106,6 +105,7 @@ difficulties_dict = {
 }
 difficulties_list = list(difficulties_dict.keys())
 
+LEVELS = []
 #if the user tries to run THIS file.
 if __name__ == "__main__":
 	print()

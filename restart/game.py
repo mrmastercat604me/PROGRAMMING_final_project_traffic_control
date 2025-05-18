@@ -4,7 +4,6 @@ from classes import *
 from variables import *
 from popups import *
 from grid import *
-from astar import find_path_astar
 
 pygame.init()
 
@@ -39,7 +38,7 @@ def game(screen, surface:pygame.Surface,grid_arg=None)->None:
 		#create the starting positions and store the grid to be saved (if the level is solved)
 		routes = create_valid_locations(grid,PAIRS,50,50,3,5)
 		if routes:
-			colour_edges_of_routes(grid,routes)
+			colour_edges_of_routes(grid,routes,NORMAL_COLOURS)
 			break
 		else:
 			print("NO ROUTES MADE")
@@ -162,6 +161,9 @@ def game(screen, surface:pygame.Surface,grid_arg=None)->None:
 
 		if len(reservations) == PAIRS:
 			print("ALL PAIRS MADE")
+			LEVELS.append(level_save_grid)
+			game_win_popup(screen,surface)
+			return
 		#--------------------------------------------------#
 		#----------DRAW-THE-SURFACE-TO-THE-SCREEN-----------#
 		screen.fill((0,0,0))

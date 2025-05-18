@@ -33,7 +33,7 @@ def confirm_game_exit_popup(screen,surface):
 	leave_button.centerx(percent_of(50,SCREEN_WIDTH))
 	#set the text for the buttons
 	confirm_text.set_text("Are you sure you want to leave?",font,(0,0,0))
-	confirm_text2.set_text("Score will be saved. Game will reset.",font,(0,0,0))
+	confirm_text2.set_text("Progress will not be saved. Game will reset.",font,(0,0,0))
 	continue_button.set_text("Continue Game",font,(0,0,0))
 	leave_button.set_text("Leave to Menu",font,(0,0,0))
 	#------------------------------------------------#
@@ -78,6 +78,75 @@ def confirm_game_exit_popup(screen,surface):
 					LeftClick = False
 				if event.button == 3: #right click
 					RightClick = False
+		#--------------------------------------------------#
+		#----------DRAW-EVERYTHING-TO-THE-SCREEN-------------#
+		screen.blit(popup_layer,(0,0))
+		pygame.display.flip()
+		mainClock.tick(FPS)
+		#----------------------#
+
+
+def game_win_popup(screen,surface):
+	'''
+	Creates an overlay screen to be used as if it's a separate window.
+
+	Takes the current screen and surface.
+	returns when the user clicks
+	'''
+	#-----------CREATE-A-TRANSPARENT-SURFACE----------#
+	transparent_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+	transparent_surface.fill((96,96,96,150))
+	#----------PROPERLY-DRAW-THE-TRANSPARENT-OVERLAY---------#
+	popup_layer = surface.copy()
+	#add the transparent overlay
+	popup_layer.blit(transparent_surface,(0,0))
+	#------------------------------------------#
+	#------------------------------------------------#
+	#----------------CREATE-THE-BUTTONS--------------#
+	confirm_text = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(230,230,230))
+	confirm_text2 = Button(percent_of(25,SCREEN_WIDTH),percent_of(20,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(230,230,230))
+	leave_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(255,10,10,245))
+	#centre the buttons
+	confirm_text.centerx(percent_of(50,SCREEN_WIDTH))
+	confirm_text2.centerx(percent_of(50,SCREEN_WIDTH))
+	leave_button.centerx(percent_of(50,SCREEN_WIDTH))
+	#set the text for the buttons
+	confirm_text.set_text("Congratulations!",font,(0,0,0))
+	confirm_text2.set_text("Level will be saved to levels",font,(0,0,0))
+	leave_button.set_text("Leave to Menu",font,(0,0,0))
+	#------------------------------------------------#
+	#VARIABLES
+	LeftClick = False
+
+	running = True
+	#while the user has not closed this menu
+	while running:
+		#----------DRAW-THE-BUTTONS----------------#
+		confirm_text.draw()
+		confirm_text2.draw()
+		leave_button.draw()
+		#-------------------------------------------#
+		#-------------BUTTON-LOGIC--------------------#
+		mouse_x, mouse_y = pygame.mouse.get_pos()
+		if leave_button.collidepoint((mouse_x,mouse_y)):
+			if LeftClick:
+				return
+		LeftClick = False
+		#----------------------------------#
+		#-------PYGAME-EVENT-HANDLING----------#
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				running = False
+				pygame.quit()
+				sys.exit()
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+				return
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if event.button == 1: #left click
+					LeftClick = True
+			if event.type == pygame.MOUSEBUTTONUP:
+				if event.button == 1: #left click
+					LeftClick = False
 		#--------------------------------------------------#
 		#----------DRAW-EVERYTHING-TO-THE-SCREEN-------------#
 		screen.blit(popup_layer,(0,0))
