@@ -1,6 +1,5 @@
 import pygame
 from variables import *
-from classes import Tile
 
 def draw_text(text:str,font:'pygame.font',color:str,surface:'pygame.Surface',x:int,y:int,centerSurface=None,width:int=None,height:int=None):
 		'''
@@ -67,22 +66,24 @@ def horz_scroll_image(image,surface,y_pos=0,scroll=0)->int:
 		scroll = 0
 	return scroll
 
+def extract_coords(object)->tuple:
+	'''
+	Return x and y coordinates from an object
+	'''
+	if isinstance(object, tuple):
+		return object
+	elif hasattr(object,'x') and hasattr(object,'y'):
+		return (object.x, object.y)
+	else:
+		raise Exception("Object is not a tuple or does not have a 'x' and 'y'")
+
 def manhattan_distance(pos1,pos2):
 	'''
 	Calculates and returns the manhattan distance from one point to another taking many types
 	'''
-	#if pos 1 is a tuple use it's indexing
-	if isinstance(pos1,tuple):
-		pos1_x, pos1_y = pos1
-	#if pos 1 is a tile use it's values
-	elif isinstance(pos1,Tile):
-		pos1_x, pos1_y = pos1.x, pos1.y
-	#same thing with both of these except for pos2
-	if isinstance(pos2,tuple):
-		pos2_x, pos2_y = pos2
-	# ^^^
-	elif isinstance(pos2,Tile):
-		pos2_x, pos2_y = pos2.x, pos2.y
+	#extract the coordinates from the positions
+	pos1_x, pos1_y = extract_coords(pos1)
+	pos2_x, pos2_y = extract_coords(pos2)
 		
 	manhattan_distance = abs(pos1_x - pos2_x) + abs(pos1_y - pos2_y)
 	return manhattan_distance

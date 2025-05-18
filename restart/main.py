@@ -27,16 +27,21 @@ def main_menu():
 	scroll = 0
 
 	#create the buttons
-	title_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(255,255,255,0))
+	maze_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(2,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(255,255,255,20))
+	flow_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(255,255,255,20))
+	connect_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(18,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(255,255,255,20))
+
 	start_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
 
-	exit_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(65,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
+	exit_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(75,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
 	#centre buttons
 	start_button.centerx(percent_of(50,SCREEN_WIDTH))
 	
 	exit_button.centerx(percent_of(50,SCREEN_WIDTH))
 	#set text for the buttons
-	title_button.set_text("MAZE-FLOW-CONNECT",font,(0,0,0))
+	maze_button.set_text("MAZE",font,(255,69,0))
+	flow_button.set_text("FLOW",font,(255,69,0))
+	connect_button.set_text("CONNECT",font,(255,69,0))
 	start_button.set_text("Start",font,(0,0,0))
 	
 	exit_button.set_text("Exit",font,(0,0,0))
@@ -52,13 +57,15 @@ def main_menu():
 		scroll = horz_scroll_image(BackgroundImage,surface,scroll=scroll)
 		#----------------------------------------#
 		#----------DRAW-TITLE-AND-BUTTONS------#
-		title_button.draw()
+		maze_button.draw()
+		flow_button.draw()
+		connect_button.draw()
 		start_button.draw()
 		exit_button.draw()
 		#--------------------------------------------#
 		#----------BUTTON-LOGIC--------#
 		mouse_x,mouse_y = pygame.mouse.get_pos()
-		if title_button.collidepoint((mouse_x,mouse_y)):
+		if connect_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
 				pass
 			if RightClick:

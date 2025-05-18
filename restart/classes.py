@@ -1,5 +1,6 @@
 import pygame, random
-from functions import *
+from functions import draw_text, manhattan_distance
+from variables import *
 
 class Button():
 	def __init__(self, x:int, y:int, width:int, height:int, surface:pygame.Surface,color:tuple):
@@ -56,7 +57,7 @@ class Button():
 			draw_text(self.text ,self.font,self.text_color, self.surface, 0,0, self.rect)
 
 class Tile:
-	def __init__(self,x:int,y:int,type:str,colour=(255,255,255)):
+	def __init__(self,x:int,y:int,type:str,grid,colour=(255,255,255)):
 		'''
 		Initiliases an instance of the class using the marked parameters.
 		
@@ -71,6 +72,7 @@ class Tile:
 		self.y = y
 		self.pos = (x,y)
 		self.type = type
+		self.grid = grid
 		self.colour = colour
 		self.g = float('inf')
 		self.h = float('inf')
@@ -85,7 +87,7 @@ class Tile:
 		'''
 		return self.f < node.f
 
-	def __eq__(self,node:tuple | Tile) -> bool:
+	def __eq__(self,node) -> bool:
 		'''
 		Compares self to a tile or a position (of indexes in the grid) and determines if they are the same based on position.
 
@@ -93,7 +95,10 @@ class Tile:
 		'''
 		#check the status based on "node" being a Tile
 		if isinstance(node, Tile):
-			return (self.x == node.x) and (self.y == node.y)
+			if self.grid == node.grid:
+				return (self.x == node.x) and (self.y == node.y)
+			else:
+				return False
 		#check the status based on "node" being a tuple
 		if isinstance(node, tuple):
 			node_x, node_y = node
@@ -123,6 +128,8 @@ class Tile:
 
 		Returns an integer distance.
 		'''
+		if node.grid != self.grid:
+			raise Exception("Can only generate manhattan distance of tiles in the same grid.")
 		self_node = (self.x, self.y)
 		node_1 = (node.x, node.y)
 		temp_manhattan_distance = manhattan_distance(self_node, node_1)
@@ -154,18 +161,28 @@ class Tile:
 			f = self.f
 		return g, h, f
 	
-	def get_direction(self,tile):
-		'''
-		Returns the direction the current tile is from the specified tile.
-		'''
-		#(0,0) and (2,0)
-		dx = self.x - tile.x
-		dy = self.y - tile.y
+	# def get_direction(self,tile):
+	# 	'''
+	# 	Returns the direction the current tile is from the specified tile.
+	# 	'''
+	# 	#(0,0) and (2,0)
+	# 	dx = self.x - tile.x
+	# 	dy = self.y - tile.y
 		
-		if (dx, dy) in DIRECTIONS:
-			return (dx, dy)
+	# 	if (dx, dy) in DIRECTIONS:
+	# 		return (dx, dy)
+	# 	else:
+	# 		return None
+	
+	def generate_tile_values(self,start,goal):
+		if self.grid == start.grid and self.grid == goal.grid:
+			g = self.generate_manhattan_distance(start)
+			h = self.generate_manhattan_distance(goal)
+			f = g + h
+			self.set_tile_values(g,h,f)
 		else:
-			return None
+			raise Exception("Can only generate tile values of tiles that are in the same grid")
+
 class Grid:
 	def __init__(self, width:int, height:int,x:int=0,y:int=0,grid=None):
 		'''
@@ -192,7 +209,7 @@ class Grid:
 				row = []
 				#iterate through the width
 				for x in range(width):
-					col = Tile(x+self.x, y+self.y,type='obstacle')
+					col = Tile(x+self.x, y+self.y,type='obstacle',grid=self)
 					row.append(col)
 				self.grid.append(row)
 	
@@ -260,7 +277,15 @@ class Grid:
 		Copy the grid instance using the current grid's grid list
 		Return a new instance of the Grid class using the current grid's grid list
 		'''
-		temp_instance = Grid(self.width,self.height,grid=self.grid)
+		temp_instance = Grid(self.width,self.height)
+		temp_grid_copy = []
+		for row in self.grid:
+			temp_row = []
+			for tile in row:
+				new_temp_tile = Tile(tile.x,tile.y,tile.type,grid=temp_instance,colour=tile.colour)
+				temp_row.append(new_temp_tile)
+			temp_grid_copy.append(temp_row)
+		temp_instance.grid = temp_grid_copy
 		return temp_instance
 	
 #if the user tries to run THIS file.

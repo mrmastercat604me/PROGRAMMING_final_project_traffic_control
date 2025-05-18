@@ -67,27 +67,13 @@ def game(screen, surface:pygame.Surface)->None:
 			#TEMPORARY
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
 				print('c key pressed')
-				while True:
-					routes = create_valid_locations(grid,3)
-					if routes:
-						print("Routes created")
-						break
-					else:
-						print("NO ROUTES MADE")
-						break
-				temp_colours = []
-				for route in routes:
-					while True:
-						colour = random.choice(list(EASY_COLOURS.values()))
-						if colour not in temp_colours:
-							temp_colours.append(colour)
-							break
-					first_tile = route[0]
-					last_tile = route[-1]
-					first_tile.colour = colour
-					last_tile.colour = colour
-					for tile in route:
-						print(tile.type)
+				routes = create_valid_locations(grid,3,50,50,3,5)
+				if routes:
+					print("Routes created")
+				else:
+					print("NO ROUTES MADE")
+					
+				colour_edges_of_routes(grid,routes)
 			#--------------------------------------------#
 
 			#if the user uses the mouse buttons

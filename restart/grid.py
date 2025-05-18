@@ -461,6 +461,7 @@ def connect_corners_to_center(grid:Grid) -> None:
 	for corner in corners:
 		corner_tile = grid.get_tile_with_index(corner[0],corner[1])
 		#if there is a path less than half of the grid then we don't create a path
+		corner_tile.type = center_tile.type
 		if len(bfs_tile(grid,corner_tile,center_tile)) <= ((grid.width/2)+(grid.height/2))//2:
 			continue
 		else:
@@ -481,9 +482,9 @@ def create_maze(grid:Grid)->Grid:
 
 	add_branching(grid)
 
-	grid = connect_isolated_regions(grid)
-
 	connect_corners_to_center(grid)
+
+	grid = connect_isolated_regions(grid)
 
 	return grid
 
@@ -577,7 +578,7 @@ def create_valid_locations(grid,pairs:int=3,max_global_attempts:int=50,max_pair_
 		#add the current attempt to the count
 		attempt += 1
 		#attempt to place each pair
-		exclude_tiles = []
+		exclude_tiles = set()
 		reservations = []
 		#iterate through how every many pairs we need to make
 		for pair_num in range(pairs):
@@ -585,54 +586,92 @@ def create_valid_locations(grid,pairs:int=3,max_global_attempts:int=50,max_pair_
 			pair_attempts = 0
 			#if we haven't made a pair, attempt to make a pair
 			while pair_made is False:
-				#if we have tried to make a single pair more than max_pair_attempt times, we cancel the entire operation
+				#if we have tried to make a single pair more than max_pair_attempt times, we cancel this pair making so then we continue to a new global attempt
 				if pair_attempts > max_pair_attempts:
-					return None
+					print("REACHED MAX PAIR ATTEMPTS")
+					break
 				#otherwise, add this attempt to the current count
 				else:
 					pair_attempts += 1
 				#---------------------------------#
 				#PROBLEM HERE WHERE EVENTUALLY (POSSIBLY) THE CHOSEN EDGE MAY ONLY HAVE TILES THAT ARE IN THE EXCLUDE_TILES
-				start_edge = random.choice(list(edge_tiles_dict.keys()))
-				#select a start_tile in the edge that is not part of the exclude_tiles
-				while True:
-					start_tile = random.choice(edge_tiles_dict[start_edge])
-					if start_tile not in exclude_tiles:
+				start_edges = list(edge_tiles_dict.keys())
+				random.shuffle(start_edges)
+				start_tile = None
+				for edge in start_edges:
+					candidates = [tile for tile in edge_tiles_dict[edge] if tile not in exclude_tiles]
+					if candidates:
+						start_tile = random.choice(candidates)
+						start_edge = edge
 						break
+				if not start_tile:
+					continue #try another pair attempt
+
 				#select a goal_tile that is on an edge that is:
 				# different from the start_tile's edge,
 				# different than the start_tile,
 				# farther than avoid_radius away from start_tile,
 				# and not in exclude_tiles
-				while True:
-					goal_edge = random.choice(list(edge_tiles_dict.keys()))
-					if goal_edge != start_edge:
-						goal_tile = random.choice(edge_tiles_dict[goal_edge])
-						if (goal_tile != start_tile) and (manhattan_distance(start_tile,goal_tile) > avoid_radius) and (goal_tile not in exclude_tiles):
-							break
+				goal_tile = None
+				goal_edges = [edge for edge in edge_tiles_dict.keys() if edge != start_edge]
+				random.shuffle(goal_edges)
+				for edge in goal_edges:
+					candidates = []
+					for tile in edge_tiles_dict[edge]:
+						if (tile not in exclude_tiles) and (tile != start_tile) and (manhattan_distance(start_tile,tile) > avoid_radius):
+							candidates.append(tile)
+					if candidates:
+						goal_tile = random.choice(candidates)
+						break
+				if not goal_tile:
+					continue #try another pair attempt
+
 				#----------------------------------#
 				#create a breadth first search route from start_tile to goal_tile, exclduing exclude_tiles
-				route = bfs_tile(temp_grid,start_tile,goal_tile,'path',exclude_tiles)
+				route = bfs_tile(temp_grid,start_tile,goal_tile,['path'],exclude_tiles)
 				#if a route was made add the route to reservations and add the tiles from the route into exclude_tiles
 				if route:
 					reservations.append(route)
-					for tile in route:
-						exclude_tiles.append(tile)
+					exclude_tiles.update(route)
 					#say that a pair was made
 					pair_made = True
 				#if their was no pair made, meaning route was none
 				if pair_made is False:
-					#remove the previous reservation and the tiles from exclude_tiles
-					for tile in reservations[-1]:
-						exclude_tiles.remove(tile)
-					reservations.pop(-1)
-				#then try again to make a pair
+					continue
+				#then try again to make a pair / move on to the next pair (if pair_made is True)
 			#continue to making the next pair
 		#after all pairs should have been made, make sure all pairs have been made.
 		#if all pairs have been made, return all of the routes
 		if len(reservations) == pairs:
 			return reservations
 		#if not all pairs were made, progress to the next iteration of attempts (start the whole process over)
+	if attempt > max_global_attempts:
+		print("REACHED MAX GLOBAL ATTEMPTS")
+		return None
+	
+def colour_edges_of_routes(grid,routes:list,colours=list(EASY_COLOURS.values()))->None:
+	'''
+	Select the first and last tile of each route and colour it on the 'grid'
+	
+	Colours matching pairs appropriately using a random choice from 'colours'
+
+	Returns None
+	'''
+	temp_colours = []
+	#iterate through all of the routes
+	for route in routes:
+		#add a *new* colour to the temp_colours and use the colour
+		while True:
+			colour = random.choice(colours)
+			if colour not in temp_colours:
+				temp_colours.append(colour)
+				break
+		first_tile = route[0]
+		last_tile = route[-1]
+		first_tile = grid.get_tile_with_index(first_tile.x,first_tile.y)
+		last_tile = grid.get_tile_with_index(last_tile.x,last_tile.y)
+		first_tile.colour = colour
+		last_tile.colour = colour
 		
 #if the user tries to run THIS file.
 if __name__ == "__main__":

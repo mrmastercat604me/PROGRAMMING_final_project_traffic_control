@@ -41,3 +41,66 @@ All loops must include a comment describing their purpose.
 All conditionals (if, elif, else) must have a comment
     explaining what they check for and why.
 Failure to properly comment your code will result in a point deduction.
+
+
+
+
+def create_valid_locations(grid, pairs=3, max_global_attempts=50, max_pair_attempts=50, edge_range=3, avoid_radius=7):
+    '''
+    Creates "pairs" many non-overlapping paths on the grid.
+    '''
+    temp_grid = grid.copy()
+    edge_tiles_dict = return_edge_tiles(temp_grid, edge_range, type=['path'])
+
+    for attempt in range(max_global_attempts):
+        exclude_tiles = set()
+        reservations = []
+
+        for _ in range(pairs):
+            pair_found = False
+
+            for pair_attempt in range(max_pair_attempts):
+                # Get valid start tiles
+                start_edges = list(edge_tiles_dict.keys())
+                random.shuffle(start_edges)
+                start_tile = None
+                for edge in start_edges:
+                    candidates = [t for t in edge_tiles_dict[edge] if t not in exclude_tiles]
+                    if candidates:
+                        start_tile = random.choice(candidates)
+                        start_edge = edge
+                        break
+                if not start_tile:
+                    continue  # Try another pair attempt
+
+                # Get valid goal tiles
+                goal_tile = None
+                goal_edges = [e for e in edge_tiles_dict.keys() if e != start_edge]
+                random.shuffle(goal_edges)
+                for edge in goal_edges:
+                    candidates = [
+                        t for t in edge_tiles_dict[edge]
+                        if t not in exclude_tiles and manhattan_distance(start_tile, t) > avoid_radius
+                    ]
+                    if candidates:
+                        goal_tile = random.choice(candidates)
+                        break
+                if not goal_tile:
+                    continue  # Try another pair attempt
+
+                # Run BFS
+                route = bfs_tile(temp_grid, start_tile, goal_tile, 'path', exclude_tiles)
+                if route:
+                    reservations.append(route)
+                    exclude_tiles.update(route)
+                    pair_found = True
+                    break  # Success — break out of pair_attempt loop
+
+            if not pair_found:
+                break  # Could not find this pair, retry whole attempt
+
+        if len(reservations) == pairs:
+            return reservations  # Success
+
+    print("REACHED MAX GLOBAL ATTEMPTS")
+    return None
