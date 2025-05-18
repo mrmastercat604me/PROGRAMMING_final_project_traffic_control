@@ -78,6 +78,7 @@ class Tile:
 		self.h = float('inf')
 		self.f = float('inf')
 		self.parent_node = None
+		self.is_reserved = False
 	
 	def __lt__(self,node:'Tile') -> bool:
 		'''

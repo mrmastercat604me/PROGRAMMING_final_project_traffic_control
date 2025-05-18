@@ -21,6 +21,8 @@ TILE_SIZE_HEIGHT:int = GRID_HEIGHT // GRID_ROWS
 EDGES:list = ["top","left" ,"bottom","right"]
 DIRECTIONS:list = [(0,-1),(0,1),(-1,0),(1,0)] #up, down, left, right
 
+PAIRS = 3
+
 #COLOURS
 EASY_COLOURS = {
 	"red": (255,0,0),

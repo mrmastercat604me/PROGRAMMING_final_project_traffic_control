@@ -9,7 +9,7 @@ from astar import find_path_astar
 pygame.init()
 
 
-def game(screen, surface:pygame.Surface)->None:
+def game(screen, surface:pygame.Surface,grid_arg=None)->None:
 	'''
 	Function to create a new "window" by blanking the surface and drawing everything to the surface.
 	The surface is then blit to the screen.
@@ -28,18 +28,32 @@ def game(screen, surface:pygame.Surface)->None:
 	GRID_Y = (SCREEN_HEIGHT//2) - (GRID_HEIGHT//2)
 	#create any and all objects
 	grid_surface = pygame.Surface((GRID_WIDTH,GRID_HEIGHT))
-	grid = Grid(GRID_COLS,GRID_ROWS,x=GRID_X,y=GRID_Y)
+	if grid_arg is None:
+		grid = Grid(GRID_COLS,GRID_ROWS,x=GRID_X,y=GRID_Y)
+	else:
+		grid = grid_arg.copy()
 
 	#create the random maze
-	create_maze(grid)
-	#create the starting positions and store the grid to be saved (if the level is solved)
-	
+	while True:
+		create_maze(grid)
+		#create the starting positions and store the grid to be saved (if the level is solved)
+		routes = create_valid_locations(grid,PAIRS,50,50,3,5)
+		if routes:
+			colour_edges_of_routes(grid,routes)
+			break
+		else:
+			print("NO ROUTES MADE")
+	#for saving a level to the levels screen (when the level is complete)
+	level_save_grid = grid.copy()
+		
 	LeftClick = False
 	RightClick = False
 
+	reservations = []
 	reservation = []
 	finalise_reservation = True
 	final_reservation_colour = None
+	remove_reservation = None
 
 	running = True
 	#while loop to run while the game is not exited.
@@ -65,19 +79,11 @@ def game(screen, surface:pygame.Surface)->None:
 				#if they confirm their exit, return out of the function (to go back to the main function / main menu)
 				if confirm_game_exit_popup(screen,surface):
 					return
-			#TEMPORARY
-			if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-				print('c key pressed')
-				routes = create_valid_locations(grid,3,50,50,3,5)
-				if routes:
-					print("Routes created")
-				else:
-					print("NO ROUTES MADE")
-					
-				colour_edges_of_routes(grid,routes)
 			
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+				reservations = []
 				for tile in iterate_grid(grid):
+					tile.is_reserved = False
 					if "_route" in tile.type:
 						tile.type = 'path'
 						tile.colour = (255,255,255)
@@ -91,10 +97,24 @@ def game(screen, surface:pygame.Surface)->None:
 					print(tile)
 					if tile:
 						if '_end' in tile.type and len(reservation) == 0:
-							finalise_reservation = False
-							if tile not in reservation:
-								reservation.append(tile)
-							final_reservation_colour = tile.colour
+							if not tile.is_reserved:
+								finalise_reservation = False
+								if tile not in reservation:
+									reservation.append(tile)
+								final_reservation_colour = tile.colour
+							else:
+								#remove the reservation
+								for reserve in reservations:
+									if tile in reserve:
+										reservations.remove(reserve)
+										remove_reservation = reserve
+								if remove_reservation is not None:
+									for tile_ in remove_reservation:
+										tile_.is_reserved = False
+										if "_end" not in tile_.type:
+											tile_.type = 'path'
+											tile_.colour = (255,255,255)
+								remove_reservation = None
 				if event.button == 3: #if right click
 					RightClick = True
 			#if left click and mouse moves
@@ -127,7 +147,9 @@ def game(screen, surface:pygame.Surface)->None:
 				if event.button == 1: #if not left clicking
 					LeftClick = False
 					if finalise_reservation and len(reservation) > 0:
-						pass
+						for tile in reservation:
+							tile.is_reserved = True
+						reservations.append(reservation)
 					if not finalise_reservation and len(reservation) > 0:
 						for tile in reservation:
 							if "_end" not in tile.type:
@@ -138,6 +160,8 @@ def game(screen, surface:pygame.Surface)->None:
 				if event.button == 3: #if not right clicking
 					RightClick = False
 
+		if len(reservations) == PAIRS:
+			print("ALL PAIRS MADE")
 		#--------------------------------------------------#
 		#----------DRAW-THE-SURFACE-TO-THE-SCREEN-----------#
 		screen.fill((0,0,0))
