@@ -63,7 +63,7 @@ class Tile:
 		
 		"x" and "y" are indexes in a grid.
 
-		"type" is a str ("path","route","obstacle","drawn_[int]")
+		"type" is a str ("path","route","obstacle","[colour]_end","[colour]_route")
 
 		Returns an instance of the class.
 
@@ -205,11 +205,11 @@ class Grid:
 		else:
 			self.grid = []
 			#iterate throght the height
-			for y in range(height):
+			for y_itr in range(height):
 				row = []
 				#iterate through the width
-				for x in range(width):
-					col = Tile(x+self.x, y+self.y,type='obstacle',grid=self)
+				for x_itr in range(width):
+					col = Tile(x_itr, y_itr, type='obstacle', grid=self)
 					row.append(col)
 				self.grid.append(row)
 	
@@ -231,12 +231,19 @@ class Grid:
 		else:
 			return None
 	
-	def get_tile_with_pos(self,x:int,y:int) -> 'Tile':
+	def get_tile_with_pos(self,x:int,y:int):
 		'''
 		Returns a tile using the x and y on the surface/screen.
+		Returns None if out of bounds
 		'''
-		grid_x = ((x-self.x) // TILE_SIZE_WIDTH) -1
-		grid_y = ((y-self.y) // TILE_SIZE_HEIGHT) -1
+		rel_x = (x - self.x)
+		rel_y = (y - self.y)
+
+		if not (0 <= rel_x < self.width * TILE_SIZE_WIDTH) and not (0 <= rel_y < self.height*TILE_SIZE_HEIGHT):
+			return None
+		
+		grid_x = int(rel_x // TILE_SIZE_WIDTH)
+		grid_y = int(rel_y // TILE_SIZE_HEIGHT)
 		return self.get_tile_with_index(x=grid_x, y=grid_y)
 	
 	def get_neighbours(self,tile:'Tile',only_type='path') -> list:

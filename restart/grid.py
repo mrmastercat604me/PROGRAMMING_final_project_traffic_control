@@ -21,15 +21,15 @@ def draw_grid(surface:pygame.Surface, grid:Grid)->'pygame.Surface':
 		for x in range(grid.width):
 			tile = grid.grid[y][x]
 
-			create_rect = pygame.Rect(x*TILE_SIZE_WIDTH,y*TILE_SIZE_HEIGHT,TILE_SIZE_WIDTH,TILE_SIZE_HEIGHT)
+			create_rect = pygame.Rect((tile.x*TILE_SIZE_WIDTH),(tile.y*TILE_SIZE_HEIGHT),TILE_SIZE_WIDTH,TILE_SIZE_HEIGHT)
 
 			#handle the type drawing logic here
-			if tile.type == 'path' or tile.type == 'route':
+			if tile.type == 'obstacle':
+				pygame.draw.rect(surface,(0,0,0),create_rect)
+			else:
 				pygame.draw.rect(surface,tile.colour,create_rect)
 				#draw black border around tile
 				pygame.draw.rect(surface,(0,0,0),create_rect, 1)
-			elif tile.type == 'obstacle':
-				pygame.draw.rect(surface,(0,0,0),create_rect)
 			
 	return surface
 
@@ -649,7 +649,7 @@ def create_valid_locations(grid,pairs:int=3,max_global_attempts:int=50,max_pair_
 		print("REACHED MAX GLOBAL ATTEMPTS")
 		return None
 	
-def colour_edges_of_routes(grid,routes:list,colours=list(EASY_COLOURS.values()))->None:
+def colour_edges_of_routes(grid,routes:list,colours:dict=EASY_COLOURS)->None:
 	'''
 	Select the first and last tile of each route and colour it on the 'grid'
 	
@@ -662,7 +662,7 @@ def colour_edges_of_routes(grid,routes:list,colours=list(EASY_COLOURS.values()))
 	for route in routes:
 		#add a *new* colour to the temp_colours and use the colour
 		while True:
-			colour = random.choice(colours)
+			colour = random.choice(list(colours.values()))
 			if colour not in temp_colours:
 				temp_colours.append(colour)
 				break
@@ -670,8 +670,12 @@ def colour_edges_of_routes(grid,routes:list,colours=list(EASY_COLOURS.values()))
 		last_tile = route[-1]
 		first_tile = grid.get_tile_with_index(first_tile.x,first_tile.y)
 		last_tile = grid.get_tile_with_index(last_tile.x,last_tile.y)
+		#change their colour
 		first_tile.colour = colour
 		last_tile.colour = colour
+		#change their type
+		first_tile.type = f'{colour}_end'
+		last_tile.type = f'{colour}_end'
 		
 #if the user tries to run THIS file.
 if __name__ == "__main__":

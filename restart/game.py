@@ -4,6 +4,7 @@ from classes import *
 from variables import *
 from popups import *
 from grid import *
+from astar import find_path_astar
 
 pygame.init()
 
@@ -23,11 +24,11 @@ def game(screen, surface:pygame.Surface)->None:
 	Return None
 	'''
 	#Calculate grid placement
-	GRID_X = percent_of(50,(SCREEN_WIDTH-(GRID_WIDTH)))
-	GRID_Y = percent_of(50,(SCREEN_HEIGHT-(GRID_HEIGHT)))
+	GRID_X = (SCREEN_WIDTH//2) - (GRID_WIDTH//2)
+	GRID_Y = (SCREEN_HEIGHT//2) - (GRID_HEIGHT//2)
 	#create any and all objects
 	grid_surface = pygame.Surface((GRID_WIDTH,GRID_HEIGHT))
-	grid = Grid(GRID_COLS,GRID_ROWS)
+	grid = Grid(GRID_COLS,GRID_ROWS,x=GRID_X,y=GRID_Y)
 
 	#create the random maze
 	create_maze(grid)
@@ -35,6 +36,10 @@ def game(screen, surface:pygame.Surface)->None:
 	
 	LeftClick = False
 	RightClick = False
+
+	reservation = []
+	finalise_reservation = True
+	final_reservation_colour = None
 
 	running = True
 	#while loop to run while the game is not exited.
@@ -44,16 +49,12 @@ def game(screen, surface:pygame.Surface)->None:
 		#---------------------------------------#
 		#----------DRAW-EVERYTHING--------------#
 		grid_surface = draw_grid(grid_surface,grid)
-		surface.blit(grid_surface,(GRID_X,GRID_Y))
+		surface.blit(grid_surface,(grid.x,grid.y))
 		#---------------------------------------#
-		#-------------INPUT-LOGIC----------------#
-		LeftClick = False
-		RightClick = False
-		#-----------------------------------------#
-		#-----------------------------------#
 		#------------PYGAME-EVENT-HANDLING----------#
 		#iterate through all of pygame's events.
 		for event in pygame.event.get():
+			mouse_pos = pygame.mouse.get_pos()
 			#if the user hits the x in the corner close the entire window.
 			if event.type == pygame.QUIT:
 				running = False
@@ -80,13 +81,32 @@ def game(screen, surface:pygame.Surface)->None:
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1: #if left click
 					LeftClick = True
+					tile = grid.get_tile_with_pos(mouse_pos[0],mouse_pos[1])
+					print(tile)
+					if tile:
+						if '_end' in tile.type and tile not in highlighted_path:
+							highlighted_type = f'{tile.colour}_route'
+							highlighted_path.append(tile)
+							highlighted_colour = tile.colour
 				if event.button == 3: #if right click
 					RightClick = True
-			
+			#if left click and mouse moves
+			if event.type == pygame.MOUSEMOTION:
+				if LeftClick:
+					tile = grid.get_tile_with_pos(mouse_pos[0],mouse_pos[1])
+					if tile and tile not in highlighted_path:
+						if len(highlighted_path) > 0:
+							if tile in grid.get_neighbours(highlighted_path[-1],'path'):
+								highlighted_path.append(tile)
+								tile.colour = highlighted_colour
+
 			#if the user is not using the mouse buttons
 			if event.type == pygame.MOUSEBUTTONUP:
 				if event.button == 1: #if not left clicking
 					LeftClick = False
+					highlighted_path = []
+					highlighted_type = None
+					highlighted_colour = None
 				if event.button == 3: #if not right clicking
 					RightClick = False
 

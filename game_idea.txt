@@ -4,7 +4,9 @@ MAZE-FLOW-CONNECT
 #---------------#
 GENERATE A MAZE WITH COLOURED PAIRS
 ALL PAIRS CONNECT AND CAN BE SOLVED
-ONCE ALL PAIRS 
+ONCE ALL PAIRS ARE MADE, LET USERS SOLVE MAZE
+ONCE ALL PAIRS SOLVED, SAVE GRID TO LEVELS
+
 #########
 
 '''
@@ -35,72 +37,29 @@ and know it’s not possible with the given labyrinth and parameters.
 
 All functions must include a comment explaining:
 -What the function does
-    What parameters it takes (if any)
-    What it returns (if anything)
+	What parameters it takes (if any)
+	What it returns (if anything)
 All loops must include a comment describing their purpose.
 All conditionals (if, elif, else) must have a comment
-    explaining what they check for and why.
+	explaining what they check for and why.
 Failure to properly comment your code will result in a point deduction.
 
 
+make an empty reservation
+make an empty final_colour
 
+if the user has left clicked on a '[colour]_end' type of tile and the tile is not in the reservation:
+	start the creation of the reservation
+	finalise_reservation = False
+	make the final colour the start_tile's colour (aka the current tile)
 
-def create_valid_locations(grid, pairs=3, max_global_attempts=50, max_pair_attempts=50, edge_range=3, avoid_radius=7):
-    '''
-    Creates "pairs" many non-overlapping paths on the grid.
-    '''
-    temp_grid = grid.copy()
-    edge_tiles_dict = return_edge_tiles(temp_grid, edge_range, type=['path'])
+if the user is creating a reservation 'if (len(reservation) > 0) and Left_Click:'
+	if the current tile is not in the reservation:
+		if the current tile is a neighbour of the previous tile in the reservation and the current tile is a 'path' tile:
+			add the current tile to the reservation
+		if the current tile is a matching '[colour]_end' type of tile:
+			we can make the reservation
+			make every tile in the reservation the final_colour and the '[colour]_route' type (except for the ends)
+			then we empty the reservation for the next go-around
 
-    for attempt in range(max_global_attempts):
-        exclude_tiles = set()
-        reservations = []
-
-        for _ in range(pairs):
-            pair_found = False
-
-            for pair_attempt in range(max_pair_attempts):
-                # Get valid start tiles
-                start_edges = list(edge_tiles_dict.keys())
-                random.shuffle(start_edges)
-                start_tile = None
-                for edge in start_edges:
-                    candidates = [t for t in edge_tiles_dict[edge] if t not in exclude_tiles]
-                    if candidates:
-                        start_tile = random.choice(candidates)
-                        start_edge = edge
-                        break
-                if not start_tile:
-                    continue  # Try another pair attempt
-
-                # Get valid goal tiles
-                goal_tile = None
-                goal_edges = [e for e in edge_tiles_dict.keys() if e != start_edge]
-                random.shuffle(goal_edges)
-                for edge in goal_edges:
-                    candidates = [
-                        t for t in edge_tiles_dict[edge]
-                        if t not in exclude_tiles and manhattan_distance(start_tile, t) > avoid_radius
-                    ]
-                    if candidates:
-                        goal_tile = random.choice(candidates)
-                        break
-                if not goal_tile:
-                    continue  # Try another pair attempt
-
-                # Run BFS
-                route = bfs_tile(temp_grid, start_tile, goal_tile, 'path', exclude_tiles)
-                if route:
-                    reservations.append(route)
-                    exclude_tiles.update(route)
-                    pair_found = True
-                    break  # Success — break out of pair_attempt loop
-
-            if not pair_found:
-                break  # Could not find this pair, retry whole attempt
-
-        if len(reservations) == pairs:
-            return reservations  # Success
-
-    print("REACHED MAX GLOBAL ATTEMPTS")
-    return None
+if the user let's go of the Left_Click before we reach the end, reservation is cleared
