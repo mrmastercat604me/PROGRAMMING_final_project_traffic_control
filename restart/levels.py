@@ -16,23 +16,27 @@ def levels_screen(screen,surface)->None:
 	Runs the game window using a selected grid.
 	'''
 	print("levels")
-	print(len(LEVELS))
 	print()
 
 	tiles_to_make = len(LEVELS)
+	tiles_can_make = round(percent_of(80,SCREEN_WIDTH)) // TILE_SIZE_WIDTH
+
 	print(tiles_to_make)
-	#need to calculate max grid_width
-	tiles_can_make = percent_of(75,TILE_SIZE_WIDTH*tiles_to_make)
-	print(SCREEN_WIDTH)
-	print(TILE_SIZE_WIDTH)
 	print(tiles_can_make)
-	if tiles_to_make*TILE_SIZE_WIDTH > percent_of(75,SCREEN_WIDTH):
-		if tiles_to_make % 5 == 0:
-			grid_height = tiles_to_make//5
+
+	if tiles_to_make >= tiles_can_make:
+		grid_width = tiles_can_make
+		if tiles_to_make % tiles_can_make == 0:
+			grid_height = tiles_to_make//tiles_can_make
 		else:
-			grid_height = tiles_to_make//5 +1
+			grid_height = (tiles_to_make//tiles_can_make) +1
 	else:
 		grid_height = 1
+		grid_width = tiles_to_make
+
+
+
+		
 	LeftClick = False
 	running = True
 	while running:

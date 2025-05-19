@@ -28,24 +28,27 @@ def main_menu():
 	scroll = 0
 
 	#create the buttons
-	maze_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(2,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(255,255,255,20))
-	flow_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(255,255,255,20))
-	connect_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(18,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(255,255,255,20))
+	maze_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(2,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(0,0,0,150))
+	flow_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(0,0,0,150))
+	connect_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(18,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(0,0,0,150))
 
-	start_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
-	levels_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
-	exit_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(65,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
+	start_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(100,100,100,255))
+	levels_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(100,100,100,255))
+	exit_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(65,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(100,100,100,255))
 	#centre buttons
+	maze_button.centerx(percent_of(40,SCREEN_WIDTH))
+	flow_button.centerx(percent_of(50,SCREEN_WIDTH))
+	connect_button.centerx(percent_of(60,SCREEN_WIDTH))
 	start_button.centerx(percent_of(50,SCREEN_WIDTH))
 	levels_button.centerx(percent_of(50,SCREEN_WIDTH))
 	exit_button.centerx(percent_of(50,SCREEN_WIDTH))
 	#set text for the buttons
-	maze_button.set_text("MAZE",font,(255,69,0))
-	flow_button.set_text("FLOW",font,(255,69,0))
-	connect_button.set_text("CONNECT",font,(255,69,0))
-	start_button.set_text("Start",font,(0,0,0))
-	levels_button.set_text("Levels",font,(0,0,0))
-	exit_button.set_text("Exit",font,(0,0,0))
+	maze_button.set_text("MAZE --",font,(255,255,255))
+	flow_button.set_text("== FLOW ==",font,(255,255,255))
+	connect_button.set_text("-- CONNECT",font,(255,255,255))
+	start_button.set_text("Start",font,(150,255,150))
+	levels_button.set_text("Levels",font,(255,255,150))
+	exit_button.set_text("Exit",font,(255,150,150))
 
 	#OTHER VARIABLES
 	LeftClick = False
