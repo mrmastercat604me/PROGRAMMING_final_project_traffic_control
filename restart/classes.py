@@ -25,6 +25,7 @@ class Button():
 		Centres the button's width using a centre x-value
 		'''
 		self.rect.centerx = x
+		self.x = self.rect.centerx - (self.width)//2
 	
 	def collidepoint(self, pos:tuple)->bool:
 		'''

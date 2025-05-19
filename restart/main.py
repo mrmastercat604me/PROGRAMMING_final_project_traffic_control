@@ -3,6 +3,7 @@ from functions import *
 from classes import Button
 from variables import *
 from game import game
+from levels import levels_screen
 
 pygame.init()
 
@@ -32,24 +33,25 @@ def main_menu():
 	connect_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(18,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(8,SCREEN_HEIGHT),surface,(255,255,255,20))
 
 	start_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(35,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
-
-	exit_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(75,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
+	levels_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
+	exit_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(65,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),surface,(200,200,200))
 	#centre buttons
 	start_button.centerx(percent_of(50,SCREEN_WIDTH))
-	
+	levels_button.centerx(percent_of(50,SCREEN_WIDTH))
 	exit_button.centerx(percent_of(50,SCREEN_WIDTH))
 	#set text for the buttons
 	maze_button.set_text("MAZE",font,(255,69,0))
 	flow_button.set_text("FLOW",font,(255,69,0))
 	connect_button.set_text("CONNECT",font,(255,69,0))
 	start_button.set_text("Start",font,(0,0,0))
-	
+	levels_button.set_text("Levels",font,(0,0,0))
 	exit_button.set_text("Exit",font,(0,0,0))
 
 	#OTHER VARIABLES
 	LeftClick = False
 	RightClick = False
 
+	in_game = False
 	running = True
 	#while the user has not quit
 	while running:
@@ -61,6 +63,7 @@ def main_menu():
 		flow_button.draw()
 		connect_button.draw()
 		start_button.draw()
+		levels_button.draw()
 		exit_button.draw()
 		#--------------------------------------------#
 		#----------BUTTON-LOGIC--------#
@@ -72,10 +75,12 @@ def main_menu():
 				pass
 		if start_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
-				game(screen,surface)
-				#call function from other files and run #just like in blastroids project
+				in_game = True
 			if RightClick:
 				pass
+		if levels_button.collidepoint((mouse_x,mouse_y)):
+			if LeftClick:
+				levels_screen(screen,surface)
 		if exit_button.collidepoint((mouse_x,mouse_y)):
 			if LeftClick:
 				running = False
@@ -97,6 +102,8 @@ def main_menu():
 					LeftClick = False
 				if event.button == 3: #if right not clicked
 					RightClick = False
+		if in_game:
+			in_game = game(screen,surface)
 		#-----------------------------------------#
 		#-----DRAW-THE-SURFACE-TO-THE-SCREEN-PROPERLY----------#
 		screen.fill((0,0,0))

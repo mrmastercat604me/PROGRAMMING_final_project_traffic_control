@@ -33,7 +33,7 @@ def confirm_game_exit_popup(screen,surface):
 	leave_button.centerx(percent_of(50,SCREEN_WIDTH))
 	#set the text for the buttons
 	confirm_text.set_text("Are you sure you want to leave?",font,(0,0,0))
-	confirm_text2.set_text("Progress will not be saved. Game will reset.",font,(0,0,0))
+	confirm_text2.set_text("The Current Level will reset.",font,(0,0,0))
 	continue_button.set_text("Continue Game",font,(0,0,0))
 	leave_button.set_text("Leave to Menu",font,(0,0,0))
 	#------------------------------------------------#
@@ -105,7 +105,7 @@ def game_win_popup(screen,surface):
 	#----------------CREATE-THE-BUTTONS--------------#
 	confirm_text = Button(percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(230,230,230))
 	confirm_text2 = Button(percent_of(25,SCREEN_WIDTH),percent_of(20,SCREEN_HEIGHT),percent_of(50,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(230,230,230))
-	leave_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(255,10,10,245))
+	leave_button = Button(percent_of(25,SCREEN_WIDTH),percent_of(50,SCREEN_HEIGHT),percent_of(25,SCREEN_WIDTH),percent_of(10,SCREEN_HEIGHT),popup_layer,(230,230,230,245))
 	#centre the buttons
 	confirm_text.centerx(percent_of(50,SCREEN_WIDTH))
 	confirm_text2.centerx(percent_of(50,SCREEN_WIDTH))
@@ -113,7 +113,7 @@ def game_win_popup(screen,surface):
 	#set the text for the buttons
 	confirm_text.set_text("Congratulations!",font,(0,0,0))
 	confirm_text2.set_text("Level will be saved to levels",font,(0,0,0))
-	leave_button.set_text("Leave to Menu",font,(0,0,0))
+	leave_button.set_text("Continue",font,(0,0,0))
 	#------------------------------------------------#
 	#VARIABLES
 	LeftClick = False

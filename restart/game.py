@@ -77,7 +77,7 @@ def game(screen, surface:pygame.Surface,grid_arg=None)->None:
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 				#if they confirm their exit, return out of the function (to go back to the main function / main menu)
 				if confirm_game_exit_popup(screen,surface):
-					return
+					return False
 			
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
 				reservations = []
@@ -163,7 +163,7 @@ def game(screen, surface:pygame.Surface,grid_arg=None)->None:
 			print("ALL PAIRS MADE")
 			LEVELS.append(level_save_grid)
 			game_win_popup(screen,surface)
-			return
+			return True
 		#--------------------------------------------------#
 		#----------DRAW-THE-SURFACE-TO-THE-SCREEN-----------#
 		screen.fill((0,0,0))
